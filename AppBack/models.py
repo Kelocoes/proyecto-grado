@@ -23,7 +23,7 @@ class Patient(models.Model):
     city = models.CharField(max_length= 50)
     address = models.CharField(max_length=  200)
     blood_type = models.CharField(max_length = 10)
-    actual_estimation = models.FloatField()
+    actual_estimation = models.FloatField(default = 0)
 
 class Doctor_Patient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE )
@@ -47,7 +47,7 @@ class Results(models.Model):
     background = models.CharField(max_length = 2, choices= [("0", "0"), ("1", "1")])
     estimation = models.FloatField()
 
-class Results_Medic_Matient(models.Model):
+class Results_Medic_Patient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE )
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE )
     result = models.ForeignKey(Results, on_delete=models.CASCADE)

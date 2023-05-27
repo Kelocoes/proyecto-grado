@@ -16,9 +16,36 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from AppBack.Controllers.Account.accountViews import RetreiveAllAccounts
+from AppBack.Controllers.Admin.adminViews import (
+    GetAdmin
+)
+
+from AppBack.Controllers.Account.accountViews import (
+    isActive
+)
+
+from AppBack.Controllers.Medic.medicViews import (
+    GetAllMedics,
+    GetMedic
+)
+
+from AppBack.Controllers.Patient.patientViews import (
+    GetAllPatients,
+    GetPatient
+)
+
+from AppBack.Controllers.Results.AiModelview import (
+    ModelApi
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/account/retreive/all', RetreiveAllAccounts.as_view())
+    path('api/account/isActive', isActive.as_view()),
+    path('api/admin/get/<str:pk>', GetAdmin.as_view()),
+    path('api/medic/get/all', GetAllMedics.as_view()),
+    path('api/medic/get/<str:pk>', GetMedic.as_view()),
+    path('api/patient/get/all', GetAllPatients.as_view()),
+    path('api/patient/get/<int:pk>', GetPatient.as_view()),
+    path('api/results/model/generate', ModelApi.as_view())
+
 ]
