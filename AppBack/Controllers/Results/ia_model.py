@@ -44,11 +44,9 @@ class IAModel:
                    "colesterol", "hdl", "ldl", "trigliceridos"]
 
         df = pd.DataFrame([data], columns = columns)
-        #df.loc[len(df)] = data.values()
         data_inputed = self.pipeline_inputer.transform(df)
 
         df = pd.DataFrame([data_inputed[0]], columns = columns)
-        #df.loc[len(df)] = data_inputed[0]
         data_normalized = self.pipeline_norm.transform(df)
 
         prediction = self.model.predict(data_normalized)

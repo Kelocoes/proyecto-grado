@@ -16,7 +16,7 @@ class isActive(APIView):
 
         account = Account.objects.filter(user_id = user_id).first()
 
-        if (not(account is None)):
+        if account is not None:
             account_dict = account.__dict__
             user_type = account_dict['user_type']
             user_satus = account_dict['user_status']
