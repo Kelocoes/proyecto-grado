@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from AppBack.Controllers.Account.accountViews import RetreiveAllAccounts
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/account/retreive/all', RetreiveAllAccounts.as_view())
 ]
