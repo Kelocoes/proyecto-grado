@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializer import AccountSerializer
+from .serializer import AccountSerializer, AccountStatusSerializer
 
 from AppBack.models import Account
 from rest_framework import permissions
@@ -29,3 +29,8 @@ class isActive(APIView):
             'user_status' :user_satus
             }
         )
+
+class ChangeStatus(generics.UpdateAPIView):
+    serializer_class = AccountStatusSerializer
+    permission_classes = [permissions.AllowAny]
+    queryset = Account.objects.all()

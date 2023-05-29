@@ -21,7 +21,8 @@ from AppBack.Controllers.Admin.adminViews import (
 )
 
 from AppBack.Controllers.Account.accountViews import (
-    isActive
+    isActive,
+    ChangeStatus
 )
 
 from AppBack.Controllers.Medic.medicViews import (
@@ -34,18 +35,31 @@ from AppBack.Controllers.Patient.patientViews import (
     GetPatient
 )
 
-from AppBack.Controllers.Results.AiModelview import (
+from AppBack.Controllers.Results.AiModelView import (
     ModelApi
+)
+
+from AppBack.Controllers.Results.resultsView import (
+    GetResultsByDoctor,
+    GetResultsWithoutRegistration
 )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #Account
     path('api/account/isActive', isActive.as_view()),
+    path('api/account/update/status/<str:pk>', ChangeStatus.as_view()),
+    #Admin
     path('api/admin/get/<str:pk>', GetAdmin.as_view()),
+    #Medic
     path('api/medic/get/all', GetAllMedics.as_view()),
     path('api/medic/get/<str:pk>', GetMedic.as_view()),
+    # Patient
     path('api/patient/get/all', GetAllPatients.as_view()),
     path('api/patient/get/<int:pk>', GetPatient.as_view()),
-    path('api/results/model/generate', ModelApi.as_view())
+    # Results
+    path('api/results/model/generate', ModelApi.as_view()),
+    path('api/results/get/byDoctor', GetResultsByDoctor.as_view()),
+    path('api/results/get/noregister', GetResultsWithoutRegistration.as_view())
 
 ]

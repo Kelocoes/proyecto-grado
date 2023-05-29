@@ -18,7 +18,7 @@ class ModelApi(APIView):
     def post(self, request):
         prediction = self.ia_model.predict(request.data)
 
-        if prediction["prediction"] != "error" and request.data["registered"] :
+        if prediction["prediction"] != "error":
             results = Results(
                 date= date.today().strftime("%Y-%m-%d"),
                 age = request.data["age"],
@@ -38,12 +38,13 @@ class ModelApi(APIView):
             )
             results.save()
 
-            results_medic_patient = Results_Medic_Patient(
-                patient_id = request.data["patient_id"],
-                result_id = results.pk,
-                user_id = request.data["user_id"],
-            )
-            results_medic_patient.save()
+            if request.data["registered"]:
+                results_medic_patient = Results_Medic_Patient(
+                    patient_id = request.data["patient_id"],
+                    result_id = results.pk,
+                    user_id = request.data["user_id"],
+                )
+                results_medic_patient.save()
 
 
 
