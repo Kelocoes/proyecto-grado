@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from AppBack.models import Results, Results_Medic_Patient
+from AppBack.models import Results, Results_Medic_Patient, Patient
 
 class ResultsSerializer(serializers.ModelSerializer):
 
@@ -7,9 +7,16 @@ class ResultsSerializer(serializers.ModelSerializer):
         model = Results
         fields = '__all__'
 
+class PatientSerializer(serializers.ModelSerializer):
+
+    class Meta: 
+        model = Patient
+        fields = ['patient_id', 'name', 'last_name']    
+
 
 class ResultsMedicPatientSerializer(serializers.ModelSerializer):
     result = ResultsSerializer()
+    patient = PatientSerializer()
 
     class Meta:
         model = Results_Medic_Patient

@@ -16,7 +16,7 @@ class User(models.Model):
     city = models.CharField(max_length= 50)
 
 class Patient(models.Model):
-    patient_id = models.IntegerField(primary_key=True )
+    patient_id = models.CharField(max_length = 20, primary_key=True )
     name = models.CharField(max_length = 50)
     last_name = models.CharField(max_length = 100)
     birth_date = models.DateField()

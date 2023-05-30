@@ -6,9 +6,15 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = ['user_id', 'email', 'user_status']
 
-class MedicSerializer(serializers.ModelSerializer):
+class MedicAccountSerializer(serializers.ModelSerializer):
     user_id  = AccountSerializer()
 
     class Meta: 
         model = User
         fields = ['user_id', 'user_type', 'name', 'last_name', 'city']
+
+class MedicSerializer(serializers.ModelSerializer):
+
+    class Meta: 
+        model = User
+        fields = '__all__'

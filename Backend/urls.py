@@ -27,12 +27,14 @@ from AppBack.Controllers.Account.accountViews import (
 
 from AppBack.Controllers.Medic.medicViews import (
     GetAllMedics,
-    GetMedic
+    GetMedic,
+    CreateMedic
 )
 
 from AppBack.Controllers.Patient.patientViews import (
     GetAllPatients,
-    GetPatient
+    GetPatient,
+    CreatePatient
 )
 
 from AppBack.Controllers.Results.AiModelView import (
@@ -54,9 +56,11 @@ urlpatterns = [
     #Medic
     path('api/medic/get/all', GetAllMedics.as_view()),
     path('api/medic/get/<str:pk>', GetMedic.as_view()),
+    path('api/medic/create', CreateMedic.as_view()),
     # Patient
     path('api/patient/get/all', GetAllPatients.as_view()),
     path('api/patient/get/<int:pk>', GetPatient.as_view()),
+    path('api/patient/create', CreatePatient.as_view()),
     # Results
     path('api/results/model/generate', ModelApi.as_view()),
     path('api/results/get/byDoctor', GetResultsByDoctor.as_view()),

@@ -1,7 +1,7 @@
 from rest_framework import generics
 from .serializer import ResultsMedicPatientSerializer, ResultsSerializer
 
-from AppBack.models import Results_Medic_Patient, Results
+from AppBack.models import Results_Medic_Patient, Results, Patient
 from rest_framework import permissions
 from rest_framework.response import Response
 

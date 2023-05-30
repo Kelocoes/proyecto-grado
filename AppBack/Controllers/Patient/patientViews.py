@@ -1,8 +1,9 @@
 from rest_framework import generics
 from .serializer import PatientSerializer
 
-from AppBack.models import Patient
-from rest_framework import permissions
+from AppBack.models import Patient, Doctor_Patient
+from rest_framework import permissions, status
+from rest_framework.response import Response
 
 class GetPatient(generics.RetrieveAPIView):
     serializer_class = PatientSerializer
@@ -13,3 +14,35 @@ class GetAllPatients(generics.ListAPIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.AllowAny]
     queryset = Patient.objects.all()
+
+class CreatePatient(generics.CreateAPIView):
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.AllowAny]
+    model = Patient
+
+
+    def post(self, request):
+
+        try:
+            patient = Patient.objects.create(
+                patient_id = request.data["patient_id"],
+                name = request.data["name"],
+                last_name = request.data["last_name"],
+                birth_date = request.data["birth_date"],
+                city = request.data["city"],
+                address = request.data["address"],
+                blood_type = request.data["blood_type"]
+            )
+
+            patient.save()
+
+            doctor_patient = Doctor_Patient.objects.create(
+                patient_id = patient.pk,
+                user_id = request.data["user_id"]
+            )
+
+            doctor_patient.save()
+
+            return Response({'message': 'Se creo correctamente'}, status = status.HTTP_201_CREATED)
+        except:
+            return Response({'message': 'Error al crear usuario'}, status = status.HTTP_400_BAD_REQUEST)
