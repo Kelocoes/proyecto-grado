@@ -65,5 +65,4 @@ urlpatterns = [
     path('api/results/model/generate', ModelApi.as_view()),
     path('api/results/get/byDoctor', GetResultsByDoctor.as_view()),
     path('api/results/get/noregister', GetResultsWithoutRegistration.as_view())
-
 ]
