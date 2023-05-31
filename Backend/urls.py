@@ -20,16 +20,9 @@ from django.urls import path
 from AppBack.Controllers.Account.accountViews import ChangeStatus, isActive
 from AppBack.Controllers.Admin.adminViews import GetAdmin
 from AppBack.Controllers.Medic.medicViews import CreateMedic, GetAllMedics, GetMedic
-from AppBack.Controllers.Patient.patientViews import (
-    CreatePatient,
-    GetAllPatients,
-    GetPatient,
-)
+from AppBack.Controllers.Patient.patientViews import CreatePatient, GetAllPatients, GetPatient
 from AppBack.Controllers.Results.AiModelView import ModelApi
-from AppBack.Controllers.Results.resultsView import (
-    GetResultsByDoctor,
-    GetResultsWithoutRegistration,
-)
+from AppBack.Controllers.Results.resultsView import GetResultsByDoctor, GetResultsWithoutRegistration
 
 urlpatterns = [
     path("admin/", admin.site.urls),
