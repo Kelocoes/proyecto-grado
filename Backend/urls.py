@@ -16,36 +16,38 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from AppBack.Controllers.Admin.adminViews import (
-    GetAdmin
-)
 
-from AppBack.Controllers.Account.accountViews import (
-    isActive
-)
-
-from AppBack.Controllers.Medic.medicViews import (
-    GetAllMedics,
-    GetMedic
-)
-
+from AppBack.Controllers.Account.accountViews import ChangeStatus, isActive
+from AppBack.Controllers.Admin.adminViews import GetAdmin
+from AppBack.Controllers.Medic.medicViews import CreateMedic, GetAllMedics, GetMedic
 from AppBack.Controllers.Patient.patientViews import (
+    CreatePatient,
     GetAllPatients,
-    GetPatient
+    GetPatient,
 )
-
-from AppBack.Controllers.Results.AiModelview import (
-    ModelApi
+from AppBack.Controllers.Results.AiModelView import ModelApi
+from AppBack.Controllers.Results.resultsView import (
+    GetResultsByDoctor,
+    GetResultsWithoutRegistration,
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/account/isActive', isActive.as_view()),
-    path('api/admin/get/<str:pk>', GetAdmin.as_view()),
-    path('api/medic/get/all', GetAllMedics.as_view()),
-    path('api/medic/get/<str:pk>', GetMedic.as_view()),
-    path('api/patient/get/all', GetAllPatients.as_view()),
-    path('api/patient/get/<int:pk>', GetPatient.as_view()),
-    path('api/results/model/generate', ModelApi.as_view())
-
+    path("admin/", admin.site.urls),
+    # Account
+    path("api/account/isActive", isActive.as_view()),
+    path("api/account/update/status/<str:pk>", ChangeStatus.as_view()),
+    # Admin
+    path("api/admin/get/<str:pk>", GetAdmin.as_view()),
+    # Medic
+    path("api/medic/get/all", GetAllMedics.as_view()),
+    path("api/medic/get/<str:pk>", GetMedic.as_view()),
+    path("api/medic/create", CreateMedic.as_view()),
+    # Patient
+    path("api/patient/get/all", GetAllPatients.as_view()),
+    path("api/patient/get/<int:pk>", GetPatient.as_view()),
+    path("api/patient/create", CreatePatient.as_view()),
+    # Results
+    path("api/results/model/generate", ModelApi.as_view()),
+    path("api/results/get/byDoctor", GetResultsByDoctor.as_view()),
+    path("api/results/get/noregister", GetResultsWithoutRegistration.as_view()),
 ]
