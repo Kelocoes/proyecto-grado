@@ -4,35 +4,34 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('AppBack', '0001_initial'),
+        ("AppBack", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='doctor_patient',
-            old_name='patient_id',
-            new_name='patient',
+            model_name="doctor_patient",
+            old_name="patient_id",
+            new_name="patient",
         ),
         migrations.RenameField(
-            model_name='doctor_patient',
-            old_name='user_id',
-            new_name='user',
+            model_name="doctor_patient",
+            old_name="user_id",
+            new_name="user",
         ),
         migrations.RenameField(
-            model_name='results_medic_matient',
-            old_name='patient_id',
-            new_name='patient',
+            model_name="results_medic_matient",
+            old_name="patient_id",
+            new_name="patient",
         ),
         migrations.RenameField(
-            model_name='results_medic_matient',
-            old_name='result_id',
-            new_name='result',
+            model_name="results_medic_matient",
+            old_name="result_id",
+            new_name="result",
         ),
         migrations.RenameField(
-            model_name='results_medic_matient',
-            old_name='user_id',
-            new_name='user',
+            model_name="results_medic_matient",
+            old_name="user_id",
+            new_name="user",
         ),
     ]

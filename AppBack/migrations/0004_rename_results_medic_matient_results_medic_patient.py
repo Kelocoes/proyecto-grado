@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('AppBack', '0003_alter_patient_actual_estimation'),
+        ("AppBack", "0003_alter_patient_actual_estimation"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Results_Medic_Matient',
-            new_name='Results_Medic_Patient',
+            old_name="Results_Medic_Matient",
+            new_name="Results_Medic_Patient",
         ),
     ]

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('AppBack', '0002_rename_patient_id_doctor_patient_patient_and_more'),
+        ("AppBack", "0002_rename_patient_id_doctor_patient_patient_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='patient',
-            name='actual_estimation',
+            model_name="patient",
+            name="actual_estimation",
             field=models.FloatField(default=0),
         ),
     ]
