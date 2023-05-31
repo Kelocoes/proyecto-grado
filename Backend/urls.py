@@ -25,7 +25,7 @@ from AppBack.Controllers.Patient.patientViews import (
     GetAllPatients,
     GetPatient,
 )
-from AppBack.Controllers.Results.AiModelView import ModelApi
+from AppBack.Controllers.Results.AiModel import ModelApi
 from AppBack.Controllers.Results.resultsView import (
     GetResultsByDoctor,
     GetResultsWithoutRegistration,
