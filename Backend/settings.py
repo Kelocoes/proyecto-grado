@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     # My apps
     "AppBack",
     "rest_framework",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # My middleware
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "Backend.urls"
@@ -155,3 +157,9 @@ if not DEBUG:  # Tell Django to copy statics to the `staticfiles` directory
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'https://proyecto-grado-front.onrender.com'
+    'https://riesgo-cardiovascular-uv.me'
+]
