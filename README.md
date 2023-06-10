@@ -18,4 +18,4 @@ Se aclara que es requerido un archivo *.env* con la siguient estructura: \
 Esto para las credenciales de la base de datos a utilizar.
 
 ### Nota del creador
-Este proyecto incluído el componente front se hizo con mucho empeño durante el año 2023.
+Este proyecto incluído el componente front se hizo con mucho empeño durante el año 2023. 
