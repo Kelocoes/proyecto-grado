@@ -16,7 +16,7 @@ class ModelApi(APIView):
         self.ia_model = IAModel()
 
     serializer_class = ResultsSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         try:

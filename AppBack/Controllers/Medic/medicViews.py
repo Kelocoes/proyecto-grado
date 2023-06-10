@@ -8,19 +8,19 @@ from .serializer import MedicAccountSerializer, MedicSerializer
 
 class GetMedic(generics.RetrieveAPIView):
     serializer_class = MedicAccountSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.filter(user_type="Medico")
 
 
 class GetAllMedics(generics.ListAPIView):
     serializer_class = MedicAccountSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = User.objects.filter(user_type="Medico").all()
 
 
 class CreateMedic(generics.CreateAPIView):
     serializer_class = MedicSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     model = User
 
     """

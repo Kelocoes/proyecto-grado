@@ -9,7 +9,7 @@ from .serializer import AccountSerializer, AccountStatusSerializer
 
 class isActive(APIView):
     serializer_class = AccountSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user_id = request.data["user_id"]
@@ -29,5 +29,5 @@ class isActive(APIView):
 
 class ChangeStatus(generics.UpdateAPIView):
     serializer_class = AccountStatusSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Account.objects.all()

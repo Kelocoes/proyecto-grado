@@ -8,7 +8,7 @@ from .serializer import ResultsMedicPatientSerializer, ResultsSerializer
 
 class GetResultsByDoctor(generics.ListAPIView):
     serializer_class = ResultsMedicPatientSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self, id_medic):
         return Results_Medic_Patient.objects.filter(user=id_medic)
@@ -22,7 +22,7 @@ class GetResultsByDoctor(generics.ListAPIView):
 
 class GetResultsWithoutRegistration(generics.ListAPIView):
     serializer_class = ResultsSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Results.objects.exclude(
         results_medic_patient__result_id__isnull=False
     ).order_by("-date")
