@@ -60,8 +60,8 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # <-- And here
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",  # <-- And here
     ],
 }
 
@@ -166,7 +166,7 @@ if not DEBUG:  # Tell Django to copy statics to the `staticfiles` directory
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'https://proyecto-grado-front.onrender.com',
-    'https://www.riesgo-cardiovascular-uv.me'
+    "http://localhost:3000",
+    "https://proyecto-grado-front.onrender.com",
+    "https://www.riesgo-cardiovascular-uv.me",
 ]
