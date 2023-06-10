@@ -3,24 +3,28 @@ from rest_framework.response import Response
 
 from AppBack.models import Doctor_Patient, Patient
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import PatientSerializer
 
 
 class GetPatient(generics.RetrieveAPIView):
     serializer_class = PatientSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
     queryset = Patient.objects.all()
 
 
 class GetAllPatients(generics.ListAPIView):
     serializer_class = PatientSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
     queryset = Patient.objects.all()
 
 
 class CreatePatient(generics.CreateAPIView):
     serializer_class = PatientSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
     model = Patient
 
     def post(self, request):

@@ -20,7 +20,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -55,8 +54,15 @@ INSTALLED_APPS = [
     # My apps
     "AppBack",
     "rest_framework",
+    "rest_framework.authtoken",
     "corsheaders",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",  # <-- And here
+    ],
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -159,7 +165,7 @@ if not DEBUG:  # Tell Django to copy statics to the `staticfiles` directory
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'https://proyecto-grado-front.onrender.com',
-    'https://riesgo-cardiovascular-uv.me'
+    "http://localhost:3000",
+    "https://proyecto-grado-front.onrender.com",
+    "https://www.riesgo-cardiovascular-uv.me"
 ]
