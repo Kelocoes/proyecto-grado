@@ -3,12 +3,14 @@ from rest_framework.response import Response
 
 from AppBack.models import Results, Results_Medic_Patient
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import ResultsMedicPatientSerializer, ResultsSerializer
 
 
 class GetResultsByDoctor(generics.ListAPIView):
     serializer_class = ResultsMedicPatientSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
 
     def get_queryset(self, id_medic):
         return Results_Medic_Patient.objects.filter(user=id_medic)
@@ -23,6 +25,7 @@ class GetResultsByDoctor(generics.ListAPIView):
 class GetResultsWithoutRegistration(generics.ListAPIView):
     serializer_class = ResultsSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
     queryset = Results.objects.exclude(
         results_medic_patient__result_id__isnull=False
     ).order_by("-date")

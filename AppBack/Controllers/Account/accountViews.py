@@ -4,12 +4,14 @@ from rest_framework.views import APIView
 
 from AppBack.models import Account
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import AccountSerializer, AccountStatusSerializer
 
 
 class isActive(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         user_id = request.data["user_id"]
@@ -30,4 +32,5 @@ class isActive(APIView):
 class ChangeStatus(generics.UpdateAPIView):
     serializer_class = AccountStatusSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
     queryset = Account.objects.all()
