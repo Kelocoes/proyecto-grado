@@ -8,7 +8,7 @@ Para instalar las dependencias de este proyecto puedes usar el archivo *build.sh
 - Pip: 22.3.1
 
 Puede ejecutarse de forma local por medio del comando *python manage.py runserver*.\
-Se aclara que es requerido un archivo *.env* con la siguient estructura: \
+Se aclara que es requerido un archivo *.env* con la siguiente estructura: \
 &nbsp;&nbsp; DB_NAME=...\
 &nbsp;&nbsp; DB_USER=...\
 &nbsp;&nbsp; DB_PASSWORD=...\
