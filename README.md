@@ -13,9 +13,11 @@ Se aclara que es requerido un archivo *.env* con la siguient estructura: \
 &nbsp;&nbsp; DB_USER=...\
 &nbsp;&nbsp; DB_PASSWORD=...\
 &nbsp;&nbsp; DB_HOST=...\
-&nbsp;&nbsp; DB_DATABASE_PORT=...
+&nbsp;&nbsp; DB_DATABASE_PORT=...\
+&nbsp;&nbsp; AES_IV=...\
+&nbsp;&nbsp; AES_SECRET_KEY=...
 
-Esto para las credenciales de la base de datos a utilizar.
+Esto para las credenciales de la base de datos a utilizar y las llaves de la encriptación usando AES 256 en modo CBC (Hay mejores pero no quiero gastar tanto tiempo en ello).
 
 ### Nota del creador
 Este proyecto incluído el componente front se hizo con mucho empeño durante el año 2023. 
