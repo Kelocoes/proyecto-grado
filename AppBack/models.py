@@ -1,30 +1,21 @@
+from django.contrib.auth.models import User as Account
 from django.db import models
 
 
 # Create your models here.
-class Account(models.Model):
-    user_id = models.CharField(primary_key=True, max_length=20)
-    user_type = models.CharField(
-        max_length=20, choices=[("Admin", "Admin"), ("Medico", "Medico")]
-    )
-    password = models.CharField(max_length=20)
-    email = models.EmailField()
-    user_status = models.BooleanField(default=True)
-
-
 class User(models.Model):
     user_id = models.ForeignKey(Account, on_delete=models.CASCADE, primary_key=True)
-    user_type = models.CharField(
-        max_length=20, choices=[("Admin", "Admin"), ("Medico", "Medico")]
-    )
-    name = models.CharField(max_length=50)
+    id = models.CharField(max_length=30)
+    id_type = models.CharField(max_length=10)
+    first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=100)
     city = models.CharField(max_length=50)
+    cellphone = models.CharField(max_length=20)
 
 
 class Patient(models.Model):
     patient_id = models.CharField(max_length=20, primary_key=True)
-    name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=100)
     birth_date = models.DateField()
     city = models.CharField(max_length=50)

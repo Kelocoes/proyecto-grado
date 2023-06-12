@@ -1,17 +1,26 @@
+from django.contrib.auth.models import User as Account
 from rest_framework import serializers
 
-from AppBack.models import Account, User
+from AppBack.models import User
 
 
-class AccountSerializer(serializers.ModelSerializer):
+class AccountAdminSerialier(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["user_id", "email", "user_status"]
+        fields = ["id", "email", "last_login"]
 
 
 class AdminSerializer(serializers.ModelSerializer):
-    user_id = AccountSerializer()
+    user_id = AccountAdminSerialier()
 
     class Meta:
         model = User
-        fields = ["user_id", "user_type", "name", "last_name", "city"]
+        fields = [
+            "user_id",
+            "id",
+            "id_type",
+            "first_name",
+            "last_name",
+            "city",
+            "cellphone",
+        ]

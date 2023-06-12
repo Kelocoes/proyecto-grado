@@ -1,12 +1,13 @@
+from django.contrib.auth.models import User as Account
 from rest_framework import serializers
 
-from AppBack.models import Account, User
+from AppBack.models import User
 
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["user_id", "email", "user_status"]
+        fields = "__all__"
 
 
 class MedicAccountSerializer(serializers.ModelSerializer):
@@ -14,10 +15,26 @@ class MedicAccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["user_id", "user_type", "name", "last_name", "city"]
+        fields = "__all__"
+
+
+class AccountMedicSerialier(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ["id", "email", "last_login"]
 
 
 class MedicSerializer(serializers.ModelSerializer):
+    user_id = AccountMedicSerialier()
+
     class Meta:
         model = User
-        fields = "__all__"
+        fields = [
+            "user_id",
+            "id",
+            "id_type",
+            "first_name",
+            "last_name",
+            "city",
+            "cellphone",
+        ]

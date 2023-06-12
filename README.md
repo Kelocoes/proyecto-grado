@@ -20,4 +20,4 @@ Se aclara que es requerido un archivo *.env* con la siguiente estructura: \
 Esto para las credenciales de la base de datos a utilizar y las llaves de la encriptación usando AES 256 en modo CBC (Hay mejores pero no quiero gastar tanto tiempo en ello).
 
 ### Nota del creador
-Este proyecto incluído el componente front se hizo con mucho empeño durante el año 2023. 
+Este proyecto incluído el componente front se hizo con mucho empeño durante el año 2023.

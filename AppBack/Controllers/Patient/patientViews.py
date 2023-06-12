@@ -1,48 +1,37 @@
-from rest_framework import generics, permissions, status
+from rest_framework import permissions, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from AppBack.models import Doctor_Patient, Patient
 
-from ..Cypher.encrypt import CustomAesRenderer
+# from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import PatientSerializer
 
 
-class GetPatient(generics.RetrieveAPIView):
+class CreatePatient(APIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [CustomAesRenderer]
+    # renderer_classes = [CustomAesRenderer]
     queryset = Patient.objects.all()
-
-
-class GetAllPatients(generics.ListAPIView):
-    serializer_class = PatientSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [CustomAesRenderer]
-    queryset = Patient.objects.all()
-
-
-class CreatePatient(generics.CreateAPIView):
-    serializer_class = PatientSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [CustomAesRenderer]
-    model = Patient
 
     def post(self, request):
         try:
+            user = request.user
+
             patient = Patient.objects.create(
-                patient_id=request.data["patient_id"],
-                name=request.data["name"],
-                last_name=request.data["last_name"],
-                birth_date=request.data["birth_date"],
-                city=request.data["city"],
-                address=request.data["address"],
-                blood_type=request.data["blood_type"],
+                patient_id=request.data.get("patient_id"),
+                first_name=request.data.get("first_name"),
+                last_name=request.data.get("last_name"),
+                birth_date=request.data.get("birth_date"),
+                city=request.data.get("city"),
+                address=request.data.get("address"),
+                blood_type=request.data.get("blood_type"),
             )
 
             patient.save()
 
             doctor_patient = Doctor_Patient.objects.create(
-                patient_id=patient.pk, user_id=request.data["user_id"]
+                patient_id=patient.pk, user_id=user.id
             )
 
             doctor_patient.save()
@@ -50,8 +39,54 @@ class CreatePatient(generics.CreateAPIView):
             return Response(
                 {"message": "Se creo correctamente"}, status=status.HTTP_201_CREATED
             )
-        except Exception:
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetPatient(APIView):
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # renderer_classes = [CustomAesRenderer]
+
+    def get(self, request):
+        try:
+            user = request.user
+            if not (user.is_superuser) and (
+                not (
+                    Doctor_Patient.objects.filter(
+                        patient_id=request.data.get("patient_id"), user_id=user.id
+                    ).exists()
+                )
+            ):
+                raise Exception("Elemento no encontrado")
+
+            patient = Patient.objects.get(pk=request.data.get("patient_id"))
+            serializer = PatientSerializer(patient)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
             return Response(
-                {"message": "Error al crear usuario"},
+                {"message": "Paciente no encontrado", "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class GetAllPatients(APIView):
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # renderer_classes = [CustomAesRenderer]
+
+    def get(self, request):
+        try:
+            user = request.user
+            if user.is_superuser:
+                patients = Patient.objects.all()
+            else:
+                patients = Patient.objects.filter(doctor_patient__user_id=user.id)
+
+            serializer = PatientSerializer(patients, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {"message": [], "error": str(e)}, status=status.HTTP_400_BAD_REQUEST
             )

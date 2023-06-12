@@ -4,7 +4,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppBack.models import Patient, Results, Results_Medic_Patient
+from AppBack.models import Doctor_Patient, Patient, Results, Results_Medic_Patient
 
 from ..Cypher.encrypt import CustomAesRenderer
 from .ia_model import IAModel
@@ -17,7 +17,7 @@ class ModelApi(APIView):
         self.ia_model = IAModel()
 
     serializer_class = ResultsSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
     renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
@@ -27,35 +27,50 @@ class ModelApi(APIView):
             if prediction["prediction"] != "error":
                 results = Results.objects.create(
                     date=date.today().strftime("%Y-%m-%d"),
-                    age=request.data["age"],
-                    sex=request.data["sex"],
-                    weight=request.data["weight"],
-                    height=request.data["height"],
-                    diabetes=request.data["diabetes"],
-                    systolic=request.data["systolic"],
-                    diastolic=request.data["diastolic"],
-                    cholesterol=request.data["cholesterol"],
-                    hdl=request.data["hdl"],
-                    ldl=request.data["ldl"],
-                    triglycerides=request.data["triglycerides"],
-                    smoking=request.data["smoking"],
-                    background=request.data["background"],
-                    estimation=prediction["prediction"],
+                    age=request.data.get("age"),
+                    sex=request.data.get("sex"),
+                    weight=request.data.get("weight"),
+                    height=request.data.get("height"),
+                    diabetes=request.data.get("diabetes"),
+                    systolic=request.data.get("systolic"),
+                    diastolic=request.data.get("diastolic"),
+                    cholesterol=request.data.get("cholesterol"),
+                    hdl=request.data.get("hdl"),
+                    ldl=request.data.get("ldl"),
+                    triglycerides=request.data.get("triglycerides"),
+                    smoking=request.data.get("smoking"),
+                    background=request.data.get("background"),
+                    estimation=prediction.get("prediction"),
                 )
                 results.save()
 
-                if request.data["registered"]:
-                    results_medic_patient = Results_Medic_Patient.objects.create(
-                        patient_id=request.data["patient_id"],
-                        result_id=results.pk,
-                        user_id=request.data["user_id"],
-                    )
-                    results_medic_patient.save()
+                if request.data.get("registered"):
+                    user = request.user
 
-                    Patient.objects.filter(pk=request.data["patient_id"]).update(
-                        actual_estimation=prediction["prediction"]
-                    )
+                    if (
+                        user.is_superuser
+                        or Doctor_Patient.objects.filter(
+                            patient_id=request.data.get("patient_id"), user_id=user.id
+                        ).exists()
+                    ):
+                        results_medic_patient = Results_Medic_Patient.objects.create(
+                            patient_id=request.data.get("patient_id"),
+                            result_id=results.pk,
+                            user_id=user.id,
+                        )
+                        results_medic_patient.save()
+
+                        Patient.objects.filter(
+                            pk=request.data.get("patient_id")
+                        ).update(actual_estimation=prediction["prediction"])
+                    else:
+                        raise Exception(
+                            "Estas tratando de hacerle una prueba a un paciente que no es tuyo"
+                        )
 
             return Response(prediction)
-        except Exception:
-            return Response({"message": "Error"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response(
+                {"message": "Error", "Error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
