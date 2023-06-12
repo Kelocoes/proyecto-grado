@@ -1,36 +1,43 @@
-from rest_framework import generics, permissions
+from django.contrib.auth.models import User as Account
+from django.utils import timezone
+from rest_framework import permissions, status
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppBack.models import Account
-
-from ..Cypher.encrypt import CustomAesRenderer
+# from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import AccountSerializer, AccountStatusSerializer
 
 
 class isActive(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [CustomAesRenderer]
+    # renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
-        user_id = request.data["user_id"]
-
-        account = Account.objects.filter(user_id=user_id).first()
-
-        if account is not None:
-            account_dict = account.__dict__
-            user_type = account_dict["user_type"]
-            user_satus = account_dict["user_status"]
-        else:
-            user_type = "not found"
-            user_satus = True
-
-        return Response({"user_type": user_type, "user_status": user_satus})
+        user = request.user
+        is_active = user.is_active
+        return Response({"detail": is_active}, status=status.HTTP_200_OK)
 
 
-class ChangeStatus(generics.UpdateAPIView):
+class ChangeStatus(APIView):
     serializer_class = AccountStatusSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    renderer_classes = [CustomAesRenderer]
-    queryset = Account.objects.all()
+    permission_classes = [permissions.AllowAny]
+    # renderer_classes = [CustomAesRenderer]
+
+    def put(self, request):
+        try:
+            token = request.data.get("token")
+            token_obj = Token.objects.get(pk=token)
+            user_id = token_obj.user_id
+            is_active = request.data.get("is_active")
+            account = Account.objects.get(pk=user_id)
+            account.is_active = is_active
+            if is_active:
+                account.last_login = timezone.now()
+            account.save()
+            return Response(
+                {"message": "Estado de activo actualizado"}, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

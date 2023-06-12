@@ -1,15 +1,14 @@
+from django.contrib.auth.models import User as Account
 from rest_framework import serializers
-
-from AppBack.models import Account
 
 
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["user_id", "user_type", "email", "user_status"]
+        fields = "__all__"
 
 
 class AccountStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["user_status"]
+        fields = ["is_active"]

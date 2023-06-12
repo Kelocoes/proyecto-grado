@@ -35,17 +35,17 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # Account
     path("api/account/isActive", isActive.as_view()),
-    path("api/account/update/status/<str:pk>", ChangeStatus.as_view()),
+    path("api/account/update/status", ChangeStatus.as_view()),
     # Admin
-    path("api/admin/get/<str:pk>", GetAdmin.as_view()),
+    path("api/admin/get", GetAdmin.as_view()),
     # Medic
-    path("api/medic/get/all", GetAllMedics.as_view()),
-    path("api/medic/get/<str:pk>", GetMedic.as_view()),
     path("api/medic/create", CreateMedic.as_view()),
+    path("api/medic/get", GetMedic.as_view()),
+    path("api/medic/get/all", GetAllMedics.as_view()),
     # Patient
-    path("api/patient/get/all", GetAllPatients.as_view()),
-    path("api/patient/get/<int:pk>", GetPatient.as_view()),
     path("api/patient/create", CreatePatient.as_view()),
+    path("api/patient/get", GetPatient.as_view()),
+    path("api/patient/get/all", GetAllPatients.as_view()),
     # Results
     path("api/results/model/generate", ModelApi.as_view()),
     path("api/results/get/byDoctor", GetResultsByDoctor.as_view()),

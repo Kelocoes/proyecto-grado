@@ -42,7 +42,7 @@ class IAModel:
         return "error"
 
     def predict(self, data):
-        data = list(data.values())[3:]
+        data = list(data.values())[2:]
 
         # Lógica de predicción utilizando el modelo
         columns = [
