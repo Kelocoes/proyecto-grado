@@ -22,10 +22,7 @@ class GetResultsByDoctor(generics.ListAPIView):
             serialized_rows = ResultsMedicPatientSerializer(rows, many=True)
             return Response(serialized_rows.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response(
-                {"message": "Hubo un error", "error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetResultsWithoutRegistration(generics.ListAPIView):

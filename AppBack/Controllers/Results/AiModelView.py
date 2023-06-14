@@ -70,7 +70,4 @@ class ModelApi(APIView):
 
             return Response(prediction)
         except Exception as e:
-            return Response(
-                {"message": "Error", "Error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
