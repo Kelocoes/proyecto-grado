@@ -17,8 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from AppBack.Controllers.Account.accountViews import ChangeStatus, isActive
-from AppBack.Controllers.Admin.adminViews import GetAdmin
+from AppBack.Controllers.Account.accountViews import (
+    ChangeStatus,
+    CheckPassword,
+    isActive,
+)
+from AppBack.Controllers.Admin.adminViews import GetAdmin, UpdateAdmin
 from AppBack.Controllers.Medic.medicViews import CreateMedic, GetAllMedics, GetMedic
 from AppBack.Controllers.Patient.patientViews import (
     CreatePatient,
@@ -36,16 +40,22 @@ urlpatterns = [
     # Account
     path("api/account/isActive", isActive.as_view()),
     path("api/account/update/status", ChangeStatus.as_view()),
+    path("api/account/checkpassword", CheckPassword.as_view()),
+    # path("api/account/changepassword", ChangePassword.as_view()),
     # Admin
     path("api/admin/get", GetAdmin.as_view()),
+    path("api/account/update/self", UpdateAdmin.as_view()),
+    # path("api/account/update/other", UpdateOther.as_view()),
     # Medic
     path("api/medic/create", CreateMedic.as_view()),
     path("api/medic/get", GetMedic.as_view()),
     path("api/medic/get/all", GetAllMedics.as_view()),
+    # path("api/medic/update/self", UpdateAdmin.as_view()),
     # Patient
     path("api/patient/create", CreatePatient.as_view()),
     path("api/patient/get", GetPatient.as_view()),
     path("api/patient/get/all", GetAllPatients.as_view()),
+    # path("api/patient/update", UpdateAdmin.as_view()),
     # Results
     path("api/results/model/generate", ModelApi.as_view()),
     path("api/results/get/byDoctor", GetResultsByDoctor.as_view()),

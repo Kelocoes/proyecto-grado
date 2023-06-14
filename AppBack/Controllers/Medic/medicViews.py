@@ -11,7 +11,7 @@ from .serializer import MedicAccountSerializer, MedicSerializer
 
 
 class CreateMedic(APIView):
-    serializer_class = (MedicAccountSerializer,)
+    serializer_class = MedicAccountSerializer
     permission_classes = [permissions.AllowAny]
     # renderer_classes = [CustomAesRenderer]
 
@@ -31,7 +31,7 @@ class CreateMedic(APIView):
                 username=username,
                 password=password,
                 is_staff=False,
-                is_active=False,
+                is_active=True,
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
@@ -50,11 +50,11 @@ class CreateMedic(APIView):
             token = Token.objects.create(user=account)
 
             return Response(
-                {"message": "Usuario creado correctamente", "token": token.key},
+                {"detail": "Usuario creado correctamente", "token": token.key},
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetMedic(APIView):
@@ -71,7 +71,7 @@ class GetMedic(APIView):
             serializer = MedicSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetAllMedics(generics.ListAPIView):

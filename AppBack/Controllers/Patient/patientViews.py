@@ -37,10 +37,10 @@ class CreatePatient(APIView):
             doctor_patient.save()
 
             return Response(
-                {"message": "Se creo correctamente"}, status=status.HTTP_201_CREATED
+                {"detail": "Se creo correctamente"}, status=status.HTTP_201_CREATED
             )
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetPatient(APIView):
@@ -65,10 +65,7 @@ class GetPatient(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response(
-                {"message": "Paciente no encontrado", "error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetAllPatients(APIView):
@@ -87,6 +84,4 @@ class GetAllPatients(APIView):
             serializer = PatientSerializer(patients, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response(
-                {"message": [], "error": str(e)}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
