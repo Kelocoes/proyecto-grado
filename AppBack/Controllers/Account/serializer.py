@@ -17,4 +17,4 @@ class AccountStatusSerializer(serializers.ModelSerializer):
 class EmailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["username, email"]
+        fields = ["username", "email"]
