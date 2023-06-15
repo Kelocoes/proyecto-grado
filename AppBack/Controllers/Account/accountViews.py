@@ -1,12 +1,23 @@
+import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from django.contrib.auth.models import User as Account
 from django.utils import timezone
+from dotenv import load_dotenv
 from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # from ..Cypher.encrypt import CustomAesRenderer
-from .serializer import AccountSerializer, AccountStatusSerializer
+from .serializer import AccountSerializer, AccountStatusSerializer, EmailSerializer
+
+load_dotenv()
+
+SENDER_ADDRESS = os.getenv("SENDER_ADDRESS")
+SENDER_PASS = os.getenv("SENDER_PASS")
 
 
 class isActive(APIView):
@@ -72,3 +83,77 @@ class CheckPassword(APIView):
 
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+
+class ChangePassword(APIView):
+    serializer_class = AccountSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # renderer_classes = [CustomAesRenderer]
+
+    def put(self, request):
+        try:
+            user = request.user
+            new_password = request.data.get("password")
+            try:
+                account = Account.objects.get(pk=user.id)
+            except Account.DoesNotExist:
+                raise Exception("Usuario no encontrado")
+            account.set_password(new_password)
+            account.save()
+            return Response(
+                {"detail": "Contraseña actualizada exitosamente"},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SendEmailPassword(APIView):
+    serializer_class = EmailSerializer
+    permission_classes = [permissions.AllowAny]
+    # renderer_classes = [CustomAesRenderer]
+
+    def post(self, request):
+        try:
+            username = request.data.get("username")
+            email = request.data.get("email")
+
+            try:
+                account = Account.objects.get(username=username, email=email)
+            except Account.DoesNotExist:
+                raise Exception("El usuario ingresado no existe")
+
+            token = Token.objects.get(user=account)
+            mail_content = (
+                """
+            Hola,
+            Parece que deseas cambiar tu contraseña, ingresa al siguiente link y sigue los pasos
+            https://riesgo-cardiovascular-uv.me/changepassword/%s
+            Atentamente: RiesgoUV """
+                % token
+            )
+            # The mail addresses and password
+            sender_address = SENDER_ADDRESS
+            sender_pass = SENDER_PASS
+            receiver_address = account.email
+            # Setup the MIME
+            message = MIMEMultipart()
+            message["From"] = sender_address
+            message["To"] = receiver_address
+            message["Subject"] = "Actualiza tu contraseña. RiesgoUV"  # The subject line
+            # The body and the attachments for the mail
+            message.attach(MIMEText(mail_content, "plain"))
+            # Create SMTP session for sending the mail
+            session = smtplib.SMTP("smtp.gmail.com", 587)  # use gmail with port
+            session.starttls()  # enable security
+            session.login(
+                sender_address, sender_pass
+            )  # login with mail_id and password
+            text = message.as_string()
+            session.sendmail(sender_address, receiver_address, text)
+            session.quit()
+            return Response(
+                {"detail": "Email enviado correctamente"}, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

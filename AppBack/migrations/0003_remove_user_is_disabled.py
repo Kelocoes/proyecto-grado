@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('AppBack', '0002_user_is_disabled'),
+        ("AppBack", "0002_user_is_disabled"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='user',
-            name='is_disabled',
+            model_name="user",
+            name="is_disabled",
         ),
     ]

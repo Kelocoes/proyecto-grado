@@ -12,3 +12,9 @@ class AccountStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ["is_active"]
+
+
+class EmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ["username, email"]
