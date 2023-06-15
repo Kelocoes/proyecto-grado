@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('AppBack', '0001_initial'),
+        ("AppBack", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='user',
-            name='is_disabled',
+            model_name="user",
+            name="is_disabled",
             field=models.BooleanField(default=False),
         ),
     ]

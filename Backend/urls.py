@@ -18,8 +18,10 @@ from django.contrib import admin
 from django.urls import path
 
 from AppBack.Controllers.Account.accountViews import (
+    ChangePassword,
     ChangeStatus,
     CheckPassword,
+    SendEmailPassword,
     isActive,
 )
 from AppBack.Controllers.Admin.adminViews import GetAdmin, UpdateAdmin
@@ -41,7 +43,8 @@ urlpatterns = [
     path("api/account/isActive", isActive.as_view()),
     path("api/account/update/status", ChangeStatus.as_view()),
     path("api/account/checkpassword", CheckPassword.as_view()),
-    # path("api/account/changepassword", ChangePassword.as_view()),
+    path("api/account/changepassword", ChangePassword.as_view()),
+    path("api/account/sendemailpassword", SendEmailPassword.as_view()),
     # Admin
     path("api/admin/get", GetAdmin.as_view()),
     path("api/account/update/self", UpdateAdmin.as_view()),

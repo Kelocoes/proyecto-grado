@@ -27,6 +27,14 @@ class CreateMedic(APIView):
             id = request.data.get("id")
             id_type = request.data.get("id_type")
 
+            if (
+                Account.objects.filter(username=username).exists()
+                or Account.objects.filter(email=email).exists()
+            ):
+                raise Exception(
+                    "Ya existe un usuario con ese nombre de usuario o correo"
+                )
+
             account = Account.objects.create_user(
                 username=username,
                 password=password,
