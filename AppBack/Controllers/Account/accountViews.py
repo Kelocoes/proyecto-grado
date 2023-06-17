@@ -11,19 +11,18 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-# from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import AccountSerializer, AccountStatusSerializer, EmailSerializer
 
 load_dotenv()
 
 SENDER_ADDRESS = os.getenv("SENDER_ADDRESS")
 SENDER_PASS = os.getenv("SENDER_PASS")
+NOT_FOUND_MESSAGE = "Usuario no encontrado"
 
 
 class isActive(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         user = request.user
@@ -34,7 +33,6 @@ class isActive(APIView):
 class ChangeStatus(APIView):
     serializer_class = AccountStatusSerializer
     permission_classes = [permissions.IsAdminUser]
-    # renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
@@ -55,7 +53,6 @@ class ChangeStatus(APIView):
 class CheckPassword(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.AllowAny]
-    # renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:
@@ -66,7 +63,7 @@ class CheckPassword(APIView):
                 account = Account.objects.get(username=username)
             except Exception:
                 return Response(
-                    {"detail": "Usuario no encontrado"},
+                    {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
@@ -96,7 +93,6 @@ class CheckPassword(APIView):
 class ChangePassword(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
@@ -106,7 +102,7 @@ class ChangePassword(APIView):
                 account = Account.objects.get(pk=user.id)
             except Account.DoesNotExist:
                 return Response(
-                    {"detail": "Usuario no encontrado"},
+                    {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
                 )
             account.set_password(new_password)
@@ -122,7 +118,6 @@ class ChangePassword(APIView):
 class SendEmailPassword(APIView):
     serializer_class = EmailSerializer
     permission_classes = [permissions.AllowAny]
-    # renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:
@@ -133,7 +128,7 @@ class SendEmailPassword(APIView):
                 account = Account.objects.get(username=username, email=email)
             except Account.DoesNotExist:
                 return Response(
-                    {"detail": "Usuario no encontrado"},
+                    {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
