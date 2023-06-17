@@ -20,7 +20,7 @@ SENDER_PASS = os.getenv("SENDER_PASS")
 NOT_FOUND_MESSAGE = "Usuario no encontrado"
 
 
-class isActive(APIView):
+class IsActive(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
 

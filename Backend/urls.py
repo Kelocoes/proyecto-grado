@@ -6,7 +6,7 @@ from AppBack.Controllers.Account.accountViews import (
     ChangeStatus,
     CheckPassword,
     SendEmailPassword,
-    isActive,
+    IsActive,
 )
 from AppBack.Controllers.Admin.adminViews import GetAdmin, UpdateAdmin, UpdateOther
 from AppBack.Controllers.Medic.medicViews import (
@@ -31,7 +31,7 @@ from AppBack.Controllers.Results.resultsView import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     # Account
-    path("api/account/isActive", isActive.as_view()),
+    path("api/account/isActive", IsActive.as_view()),
     path("api/account/update/status", ChangeStatus.as_view()),
     path("api/account/checkpassword", CheckPassword.as_view()),
     path("api/account/changepassword", ChangePassword.as_view()),
