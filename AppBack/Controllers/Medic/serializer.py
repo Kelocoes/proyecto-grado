@@ -10,7 +10,7 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class MedicAccountSerializer(serializers.ModelSerializer):
+class AccountMedicSerializer(serializers.ModelSerializer):
     user_id = AccountSerializer()
 
     class Meta:
@@ -18,19 +18,32 @@ class MedicAccountSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class AccountMedicSerialier(serializers.ModelSerializer):
+class AccountsSomeFieldsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["id", "email", "last_login"]
+        fields = ["id", "first_name", "last_name", "email", "last_login"]
 
 
-class MedicSerializer(serializers.ModelSerializer):
-    user_id = AccountMedicSerialier()
+class AccountMedicGetSerializer(serializers.ModelSerializer):
+    user_id = AccountsSomeFieldsSerializer()
 
     class Meta:
         model = User
         fields = [
             "user_id",
+            "id",
+            "id_type",
+            "first_name",
+            "last_name",
+            "city",
+            "cellphone",
+        ]
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
             "id",
             "id_type",
             "first_name",
