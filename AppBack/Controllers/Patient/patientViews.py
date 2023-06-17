@@ -4,14 +4,13 @@ from rest_framework.views import APIView
 
 from AppBack.models import Doctor_Patient, Patient
 
-# from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import PatientSerializer
 
 
 class CreatePatient(APIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
+
     queryset = Patient.objects.all()
 
     def post(self, request):
@@ -46,7 +45,6 @@ class CreatePatient(APIView):
 class GetPatient(APIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         try:
@@ -58,7 +56,10 @@ class GetPatient(APIView):
                     ).exists()
                 )
             ):
-                raise Exception("Elemento no encontrado")
+                return Response(
+                    {"detail": "Usuario no encontrado"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             patient = Patient.objects.get(pk=request.data.get("patient_id"))
             serializer = PatientSerializer(patient)
@@ -71,7 +72,6 @@ class GetPatient(APIView):
 class GetAllPatients(APIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         try:
@@ -90,7 +90,6 @@ class GetAllPatients(APIView):
 class UpdatePatient(APIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
@@ -129,7 +128,6 @@ class UpdatePatient(APIView):
 class DeletePatient(APIView):
     serializer_class = PatientSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def delete(self, request):
         try:

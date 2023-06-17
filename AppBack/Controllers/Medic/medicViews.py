@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 
 from AppBack.models import User
 
-# from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import (
     AccountMedicGetSerializer,
     AccountMedicSerializer,
@@ -18,7 +17,6 @@ from .serializer import (
 class CreateMedic(APIView):
     serializer_class = AccountMedicSerializer
     permission_classes = [permissions.AllowAny]
-    # renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:
@@ -29,15 +27,18 @@ class CreateMedic(APIView):
             email = request.data.get("email")
             city = request.data.get("city")
             cellphone = request.data.get("cellphone")
-            id = request.data.get("id")
+            medic_id = request.data.get("id")
             id_type = request.data.get("id_type")
 
             if (
                 Account.objects.filter(username=username).exists()
                 or Account.objects.filter(email=email).exists()
             ):
-                raise Exception(
-                    "Ya existe un usuario con ese nombre de usuario o correo"
+                return Response(
+                    {
+                        "detail": "Ya existe un usuario con ese nombre de usuario o correo"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             account = Account.objects.create_user(
@@ -52,7 +53,7 @@ class CreateMedic(APIView):
 
             User.objects.create(
                 user_id=account,
-                id=id,
+                id=medic_id,
                 id_type=id_type,
                 first_name=first_name,
                 last_name=last_name,
@@ -73,14 +74,12 @@ class CreateMedic(APIView):
 class GetMedic(APIView):
     serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         try:
             user = request.user
-            id = user.id
 
-            user = User.objects.get(pk=id)
+            user = User.objects.get(pk=user.id)
             serializer = AccountMedicGetSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -90,29 +89,28 @@ class GetMedic(APIView):
 class GetAllMedics(generics.ListAPIView):
     serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAdminUser]
-    # renderer_classes = [CustomAesRenderer]
+
     queryset = User.objects.exclude(user_id__is_superuser=True)
 
 
 class UpdateMedic(APIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    # renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
             user = request.user
 
             try:
-                admin = User.objects.get(pk=user.id)
+                medic = User.objects.get(pk=user.id)
                 account = Account.objects.get(pk=user.id)
-            (User.DoesNotExist, Account.DoesNotExist)
+            except (User.DoesNotExist, Account.DoesNotExist):
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
 
-            serializerAdmin = UserSerializer(admin, data=request.data)
-            serializerAccount = AccountsSomeFieldsSerializer(
+            serializer_medic = UserSerializer(medic, data=request.data)
+            serializer_account = AccountsSomeFieldsSerializer(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
@@ -121,10 +119,10 @@ class UpdateMedic(APIView):
             )
 
             # Valida los datos del serializer
-            if serializerAdmin.is_valid() and serializerAccount.is_valid():
+            if serializer_medic.is_valid() and serializer_account.is_valid():
                 # Guarda los datos actualizados en la base de datos
-                serializerAdmin.save()
-                serializerAccount.save()
+                serializer_medic.save()
+                serializer_account.save()
                 return Response(
                     {"mensaje": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,
