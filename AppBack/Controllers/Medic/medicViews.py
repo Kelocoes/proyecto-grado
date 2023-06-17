@@ -109,7 +109,7 @@ class UpdateMedic(APIView):
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
 
-            serializer_admin = UserSerializer(medic, data=request.data)
+            serializer_medic = UserSerializer(medic, data=request.data)
             serializer_account = AccountsSomeFieldsSerializer(
                 account,
                 data={
@@ -119,9 +119,9 @@ class UpdateMedic(APIView):
             )
 
             # Valida los datos del serializer
-            if serializer_admin.is_valid() and serializer_account.is_valid():
+            if serializer_medic.is_valid() and serializer_account.is_valid():
                 # Guarda los datos actualizados en la base de datos
-                serializer_admin.save()
+                serializer_medic.save()
                 serializer_account.save()
                 return Response(
                     {"mensaje": "Información actualizada correctamente"},
