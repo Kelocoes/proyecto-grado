@@ -58,7 +58,10 @@ class GetPatient(APIView):
                     ).exists()
                 )
             ):
-                raise Exception("Elemento no encontrado")
+                return Response(
+                    {"detail": "Usuario no encontrado"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             patient = Patient.objects.get(pk=request.data.get("patient_id"))
             serializer = PatientSerializer(patient)

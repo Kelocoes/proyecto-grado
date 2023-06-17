@@ -36,8 +36,11 @@ class CreateMedic(APIView):
                 Account.objects.filter(username=username).exists()
                 or Account.objects.filter(email=email).exists()
             ):
-                raise Exception(
-                    "Ya existe un usuario con ese nombre de usuario o correo"
+                return Response(
+                    {
+                        "detail": "Ya existe un usuario con ese nombre de usuario o correo"
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             account = Account.objects.create_user(
@@ -106,7 +109,7 @@ class UpdateMedic(APIView):
             try:
                 admin = User.objects.get(pk=user.id)
                 account = Account.objects.get(pk=user.id)
-            (User.DoesNotExist, Account.DoesNotExist)
+            except (User.DoesNotExist, Account.DoesNotExist):
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )

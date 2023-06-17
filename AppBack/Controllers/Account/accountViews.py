@@ -65,10 +65,16 @@ class CheckPassword(APIView):
             try:
                 account = Account.objects.get(username=username)
             except Exception:
-                raise Exception("Usuario no encontrado")
+                return Response(
+                    {"detail": "Usuario no encontrado"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             if not (account.is_active):
-                raise Exception("Usuario desactivado")
+                return Response(
+                    {"detail": "Usuario desactivado"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             if account is not None and account.check_password(password):
                 token = Token.objects.get(user=account)
@@ -79,7 +85,9 @@ class CheckPassword(APIView):
                     status=status.HTTP_200_OK,
                 )
 
-            raise Exception("Contraseña incorrecta")
+            return Response(
+                {"detail": "Contraseña incorrecta"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -97,7 +105,10 @@ class ChangePassword(APIView):
             try:
                 account = Account.objects.get(pk=user.id)
             except Account.DoesNotExist:
-                raise Exception("Usuario no encontrado")
+                return Response(
+                    {"detail": "Usuario no encontrado"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
             account.set_password(new_password)
             account.save()
             return Response(
@@ -121,7 +132,10 @@ class SendEmailPassword(APIView):
             try:
                 account = Account.objects.get(username=username, email=email)
             except Account.DoesNotExist:
-                raise Exception("El usuario ingresado no existe")
+                return Response(
+                    {"detail": "Usuario no encontrado"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             token = Token.objects.get(user=account)
             mail_content = (

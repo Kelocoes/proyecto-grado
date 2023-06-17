@@ -64,8 +64,12 @@ class ModelApi(APIView):
                             pk=request.data.get("patient_id")
                         ).update(actual_estimation=prediction["prediction"])
                     else:
-                        raise Exception(
-                            "Estas tratando de hacerle una prueba a un paciente que no es tuyo"
+                        return Response(
+                            {
+                                "detail": "Estas tratando de hacerle una estimación a un "
+                                "paciente que no es tuyo"
+                            },
+                            status=status.HTTP_400_BAD_REQUEST,
                         )
 
             return Response(prediction)
