@@ -85,3 +85,72 @@ class GetAllPatients(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdatePatient(APIView):
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # renderer_classes = [CustomAesRenderer]
+
+    def put(self, request):
+        try:
+            user = request.user
+            try:
+                if user.is_superuser:
+                    patient = Patient.objects.get(pk=request.data.get("patient_id"))
+                else:
+                    patient = Patient.objects.get(
+                        pk=request.data.get("patient_id"),
+                        doctor_patient__user_id=user.id,
+                    )
+            except Patient.DoesNotExist:
+                return Response(
+                    {"detail": "No existe el paciente"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            serializer = PatientSerializer(patient, data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"detail": "Se ha actualizado correctamente"},
+                    status=status.HTTP_200_OK,
+                )
+
+            return Response(
+                {"detail": "Ocurrió un error con los datos"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeletePatient(APIView):
+    serializer_class = PatientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # renderer_classes = [CustomAesRenderer]
+
+    def delete(self, request):
+        try:
+            user = request.user
+            try:
+                if user.is_superuser:
+                    patient = Patient.objects.get(pk=request.data.get("patient_id"))
+                else:
+                    patient = Patient.objects.get(
+                        pk=request.data.get("patient_id"),
+                        doctor_patient__user_id=user.id,
+                    )
+            except Patient.DoesNotExist:
+                return Response(
+                    {"detail": "No existe el paciente"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            patient.delete()
+            return Response(
+                {"detail": "Se ha eliminado correctamente"}, status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

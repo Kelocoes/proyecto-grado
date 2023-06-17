@@ -7,11 +7,16 @@ from rest_framework.views import APIView
 from AppBack.models import User
 
 # from ..Cypher.encrypt import CustomAesRenderer
-from .serializer import MedicAccountSerializer, MedicSerializer
+from .serializer import (
+    AccountMedicGetSerializer,
+    AccountMedicSerializer,
+    AccountsSomeFieldsSerializer,
+    UserSerializer,
+)
 
 
 class CreateMedic(APIView):
-    serializer_class = MedicAccountSerializer
+    serializer_class = AccountMedicSerializer
     permission_classes = [permissions.AllowAny]
     # renderer_classes = [CustomAesRenderer]
 
@@ -66,7 +71,7 @@ class CreateMedic(APIView):
 
 
 class GetMedic(APIView):
-    serializer_class = MedicSerializer
+    serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAuthenticated]
     # renderer_classes = [CustomAesRenderer]
 
@@ -76,14 +81,59 @@ class GetMedic(APIView):
             id = user.id
 
             user = User.objects.get(pk=id)
-            serializer = MedicSerializer(user)
+            serializer = AccountMedicGetSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetAllMedics(generics.ListAPIView):
-    serializer_class = MedicSerializer
+    serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAdminUser]
     # renderer_classes = [CustomAesRenderer]
     queryset = User.objects.exclude(user_id__is_superuser=True)
+
+
+class UpdateMedic(APIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    # renderer_classes = [CustomAesRenderer]
+
+    def put(self, request):
+        try:
+            user = request.user
+
+            try:
+                admin = User.objects.get(pk=user.id)
+                account = Account.objects.get(pk=user.id)
+            except User.DoesNotExist or Account.DoesNotExist:
+                return Response(
+                    {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
+                )
+
+            serializerAdmin = UserSerializer(admin, data=request.data)
+            serializerAccount = AccountsSomeFieldsSerializer(
+                account,
+                data={
+                    "first_name": request.data.get("first_name"),
+                    "last_name": request.data.get("last_name"),
+                },
+            )
+
+            # Valida los datos del serializer
+            if serializerAdmin.is_valid() and serializerAccount.is_valid():
+                # Guarda los datos actualizados en la base de datos
+                serializerAdmin.save()
+                serializerAccount.save()
+                return Response(
+                    {"mensaje": "Información actualizada correctamente"},
+                    status=status.HTTP_200_OK,
+                )
+
+            return Response(
+                {"detail": "Ocurrió un error con los datos"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
