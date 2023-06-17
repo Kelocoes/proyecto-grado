@@ -38,7 +38,7 @@ class UpdateAdmin(APIView):
             try:
                 admin = User.objects.get(pk=user.id)
                 account = Account.objects.get(pk=user.id)
-            except User.DoesNotExist or Account.DoesNotExist:
+            except (User.DoesNotExist, Account.DoesNotExist):
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
@@ -83,7 +83,7 @@ class UpdateOther(APIView):
             try:
                 user = User.objects.get(pk=user_id, user_id__is_superuser=False)
                 account = Account.objects.get(pk=user.id)
-            except User.DoesNotExist or Account.DoesNotExist:
+            (User.DoesNotExist, Account.DoesNotExist)
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )

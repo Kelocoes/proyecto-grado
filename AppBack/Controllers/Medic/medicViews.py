@@ -106,7 +106,7 @@ class UpdateMedic(APIView):
             try:
                 admin = User.objects.get(pk=user.id)
                 account = Account.objects.get(pk=user.id)
-            except User.DoesNotExist or Account.DoesNotExist:
+            (User.DoesNotExist, Account.DoesNotExist)
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
