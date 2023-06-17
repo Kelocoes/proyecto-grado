@@ -27,7 +27,7 @@ class CreateMedic(APIView):
             email = request.data.get("email")
             city = request.data.get("city")
             cellphone = request.data.get("cellphone")
-            id = request.data.get("id")
+            medic_id = request.data.get("id")
             id_type = request.data.get("id_type")
 
             if (
@@ -53,7 +53,7 @@ class CreateMedic(APIView):
 
             User.objects.create(
                 user_id=account,
-                id=id,
+                id=medic_id,
                 id_type=id_type,
                 first_name=first_name,
                 last_name=last_name,
@@ -78,9 +78,8 @@ class GetMedic(APIView):
     def get(self, request):
         try:
             user = request.user
-            id = user.id
 
-            user = User.objects.get(pk=id)
+            user = User.objects.get(pk=user.id)
             serializer = AccountMedicGetSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -103,15 +102,15 @@ class UpdateMedic(APIView):
             user = request.user
 
             try:
-                admin = User.objects.get(pk=user.id)
+                medic = User.objects.get(pk=user.id)
                 account = Account.objects.get(pk=user.id)
             except (User.DoesNotExist, Account.DoesNotExist):
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
 
-            serializerAdmin = UserSerializer(admin, data=request.data)
-            serializerAccount = AccountsSomeFieldsSerializer(
+            serializer_admin = UserSerializer(medic, data=request.data)
+            serializer_account = AccountsSomeFieldsSerializer(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
@@ -120,10 +119,10 @@ class UpdateMedic(APIView):
             )
 
             # Valida los datos del serializer
-            if serializerAdmin.is_valid() and serializerAccount.is_valid():
+            if serializer_admin.is_valid() and serializer_account.is_valid():
                 # Guarda los datos actualizados en la base de datos
-                serializerAdmin.save()
-                serializerAccount.save()
+                serializer_admin.save()
+                serializer_account.save()
                 return Response(
                     {"mensaje": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,

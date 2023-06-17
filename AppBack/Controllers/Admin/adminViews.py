@@ -15,9 +15,8 @@ class GetAdmin(APIView):
     def get(self, request):
         try:
             user = request.user
-            id = user.id
 
-            user = User.objects.get(pk=id)
+            user = User.objects.get(pk=user.id)
             serializer = AccountAdminSerialier(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -40,8 +39,8 @@ class UpdateAdmin(APIView):
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
 
-            serializerAdmin = UserSerializer(admin, data=request.data)
-            serializerAccount = AccountSerializer(
+            serializer_admin = UserSerializer(admin, data=request.data)
+            serializer_account = AccountSerializer(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
@@ -50,10 +49,10 @@ class UpdateAdmin(APIView):
             )
 
             # Valida los datos del serializer
-            if serializerAdmin.is_valid() and serializerAccount.is_valid():
+            if serializer_admin.is_valid() and serializer_account.is_valid():
                 # Guarda los datos actualizados en la base de datos
-                serializerAdmin.save()
-                serializerAccount.save()
+                serializer_admin.save()
+                serializer_account.save()
                 return Response(
                     {"mensaje": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,
@@ -84,8 +83,8 @@ class UpdateOther(APIView):
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
 
-            serializerUser = UserSerializer(user, data=request.data)
-            serializerAccount = AccountSerializer(
+            serializer_user = UserSerializer(user, data=request.data)
+            serializer_account = AccountSerializer(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
@@ -94,10 +93,10 @@ class UpdateOther(APIView):
             )
 
             # Valida los datos del serializer
-            if serializerUser.is_valid() and serializerAccount.is_valid():
+            if serializer_user.is_valid() and serializer_account.is_valid():
                 # Guarda los datos actualizados en la base de datos
-                serializerUser.save()
-                serializerAccount.save()
+                serializer_user.save()
+                serializer_account.save()
                 return Response(
                     {"mensaje": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,
