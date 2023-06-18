@@ -27,7 +27,10 @@ class IsActive(APIView):
     def get(self, request):
         user = request.user
         is_active = user.is_active
-        return Response({"detail": is_active}, status=status.HTTP_200_OK)
+        is_admin = user.is_superuser
+        return Response(
+            {"detail": str(is_active), "is_admin": is_admin}, status=status.HTTP_200_OK
+        )
 
 
 class ChangeStatus(APIView):

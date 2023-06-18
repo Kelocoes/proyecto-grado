@@ -5,8 +5,8 @@ from AppBack.Controllers.Account.accountViews import (
     ChangePassword,
     ChangeStatus,
     CheckPassword,
-    SendEmailPassword,
     IsActive,
+    SendEmailPassword,
 )
 from AppBack.Controllers.Admin.adminViews import GetAdmin, UpdateAdmin, UpdateOther
 from AppBack.Controllers.Medic.medicViews import (
