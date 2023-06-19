@@ -1,5 +1,6 @@
 import os
 import smtplib
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -11,12 +12,14 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import AccountSerializer, AccountStatusSerializer, EmailSerializer
 
 load_dotenv()
 
 SENDER_ADDRESS = os.getenv("SENDER_ADDRESS")
 SENDER_PASS = os.getenv("SENDER_PASS")
+FRONT_URL = os.getenv("FRONT_URL")
 NOT_FOUND_MESSAGE = "Usuario no encontrado"
 
 
@@ -62,9 +65,12 @@ class CheckPassword(APIView):
             username = request.data.get("username")
             password = request.data.get("password")
 
-            try:
-                account = Account.objects.get(username=username)
-            except Exception:
+            account = (
+                Account.objects.filter(username=username).first()
+                or Account.objects.filter(email=username).first()
+            )
+
+            if not (account):
                 return Response(
                     {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
@@ -101,6 +107,8 @@ class ChangePassword(APIView):
         try:
             user = request.user
             new_password = request.data.get("password")
+            secret = request.data.get("secret")
+
             try:
                 account = Account.objects.get(pk=user.id)
             except Account.DoesNotExist:
@@ -108,11 +116,24 @@ class ChangePassword(APIView):
                     {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-            account.set_password(new_password)
-            account.save()
+
+            cypher_class = CustomAesRenderer()
+            decrypted_secret = cypher_class.decryptString(secret)
+
+            if decrypted_secret == str(datetime.now().date()):
+                account.set_password(new_password)
+                account.save()
+                return Response(
+                    {"detail": "Contraseña actualizada exitosamente"},
+                    status=status.HTTP_200_OK,
+                )
+
             return Response(
-                {"detail": "Contraseña actualizada exitosamente"},
-                status=status.HTTP_200_OK,
+                {
+                    "detail": "Link vencido, realiza los pasos "
+                    "nuevamente para actualizar tu contraseña"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -125,47 +146,55 @@ class SendEmailPassword(APIView):
     def post(self, request):
         try:
             username = request.data.get("username")
-            email = request.data.get("email")
 
-            try:
-                account = Account.objects.get(username=username, email=email)
-            except Account.DoesNotExist:
+            account = (
+                Account.objects.filter(username=username).first()
+                or Account.objects.filter(email=username).first()
+            )
+            if not (account):
                 return Response(
                     {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
+            if not (account.is_active):
+                return Response(
+                    {"detail": "Usuario desactivado"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             token = Token.objects.get(user=account)
-            mail_content = (
-                """
+            cypher_class = CustomAesRenderer()
+            secret = cypher_class.encryptString(data=str(datetime.now().date()))
+            mail_content = """
             Hola,
-            Parece que deseas cambiar tu contraseña, ingresa al siguiente link y sigue los pasos
-            https://riesgo-cardiovascular-uv.me/changepassword/%s
-            Atentamente: RiesgoUV """
-                % token
+            Parece que deseas cambiar tu contraseña, ingresa al siguiente link y sigue los pasos:
+            %s/#/changepassword/%s/%s
+            Tienes el plazo de el día de hoy para realizar esta acción.
+
+            Atentamente: RiesgoUV """ % (
+                FRONT_URL,
+                token,
+                secret,
             )
-            # The mail addresses and password
+
             sender_address = SENDER_ADDRESS
             sender_pass = SENDER_PASS
             receiver_address = account.email
-            # Setup the MIME
             message = MIMEMultipart()
             message["From"] = sender_address
             message["To"] = receiver_address
-            message["Subject"] = "Actualiza tu contraseña. RiesgoUV"  # The subject line
-            # The body and the attachments for the mail
+            message["Subject"] = "Actualiza tu contraseña. RiesgoUV"
             message.attach(MIMEText(mail_content, "plain"))
-            # Create SMTP session for sending the mail
-            session = smtplib.SMTP("smtp.gmail.com", 587)  # use gmail with port
-            session.starttls()  # enable security
-            session.login(
-                sender_address, sender_pass
-            )  # login with mail_id and password
+            session = smtplib.SMTP("smtp.gmail.com", 587)
+            session.starttls()
+            session.login(sender_address, sender_pass)
             text = message.as_string()
             session.sendmail(sender_address, receiver_address, text)
             session.quit()
             return Response(
-                {"detail": "Email enviado correctamente"}, status=status.HTTP_200_OK
+                {"detail": "Te hemos enviado un correo electrónico"},
+                status=status.HTTP_200_OK,
             )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
