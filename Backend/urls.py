@@ -9,6 +9,7 @@ from AppBack.Controllers.Account.accountViews import (
     SendEmailPassword,
 )
 from AppBack.Controllers.Admin.adminViews import GetAdmin, UpdateAdmin, UpdateOther
+from AppBack.Controllers.Captcha.CaptchaViews import GetCaptchaResponse
 from AppBack.Controllers.Medic.medicViews import (
     CreateMedic,
     GetAllMedics,
@@ -30,6 +31,8 @@ from AppBack.Controllers.Results.resultsView import (
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # Captcha
+    path("api/captcha/getResponse", GetCaptchaResponse.as_view()),
     # Account
     path("api/account/isActive", IsActive.as_view()),
     path("api/account/update/status", ChangeStatus.as_view()),
