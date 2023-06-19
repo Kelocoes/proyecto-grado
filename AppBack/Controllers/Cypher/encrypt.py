@@ -3,7 +3,7 @@ import json
 import os
 
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad
+from Crypto.Util.Padding import pad, unpad
 from dotenv import load_dotenv
 from rest_framework.renderers import BaseRenderer
 
@@ -26,3 +26,24 @@ class CustomAesRenderer(BaseRenderer):
         ciphertext_b64 = base64.b64encode(ciphertext).decode()
         response = {"ciphertext": ciphertext_b64}
         return json.dumps(response)
+
+    def decryptJson(self, data):
+        ciphertext = base64.b64decode(data["ciphertext"])
+        cipher = AES.new(AES_SECRET_KEY, AES.MODE_CBC, AES_IV)  # NOSONAR
+        plaintext = unpad(cipher.decrypt(ciphertext), 16)
+        plaintext_text = plaintext.decode('utf-8')
+        return eval(plaintext_text)
+
+    def encryptString(self, data):
+        padded_plaintext = pad(data.encode(), 16)
+        cipher = AES.new(AES_SECRET_KEY, AES.MODE_CBC, AES_IV)  # NOSONAR
+        ciphertext = cipher.encrypt(padded_plaintext)
+        ciphertext_b64 = base64.b64encode(ciphertext).decode()
+        return ciphertext_b64
+
+    def decryptString(self, data):
+        ciphertext = base64.b64decode(data)
+        cipher = AES.new(AES_SECRET_KEY, AES.MODE_CBC, AES_IV)  # NOSONAR
+        plaintext = unpad(cipher.decrypt(ciphertext), 16)
+        plaintext_text = plaintext.decode('utf-8')
+        return plaintext_text
