@@ -31,7 +31,7 @@ class CustomAesRenderer(BaseRenderer):
         ciphertext = base64.b64decode(data["ciphertext"])
         cipher = AES.new(AES_SECRET_KEY, AES.MODE_CBC, AES_IV)  # NOSONAR
         plaintext = unpad(cipher.decrypt(ciphertext), 16)
-        plaintext_text = plaintext.decode('utf-8')
+        plaintext_text = plaintext.decode("utf-8")
         return eval(plaintext_text)
 
     def encryptString(self, data):
@@ -45,5 +45,5 @@ class CustomAesRenderer(BaseRenderer):
         ciphertext = base64.b64decode(data)
         cipher = AES.new(AES_SECRET_KEY, AES.MODE_CBC, AES_IV)  # NOSONAR
         plaintext = unpad(cipher.decrypt(ciphertext), 16)
-        plaintext_text = plaintext.decode('utf-8')
+        plaintext_text = plaintext.decode("utf-8")
         return plaintext_text

@@ -1,5 +1,6 @@
 import os
 import smtplib
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -10,9 +11,8 @@ from rest_framework import permissions, status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..Cypher.encrypt import CustomAesRenderer
-from datetime import datetime
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import AccountSerializer, AccountStatusSerializer, EmailSerializer
 
 load_dotenv()
@@ -65,9 +65,12 @@ class CheckPassword(APIView):
             username = request.data.get("username")
             password = request.data.get("password")
 
-            account = Account.objects.filter(username=username).first() or Account.objects.filter(email=username).first()
+            account = (
+                Account.objects.filter(username=username).first()
+                or Account.objects.filter(email=username).first()
+            )
 
-            if (not(account)):
+            if not (account):
                 return Response(
                     {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
@@ -117,7 +120,7 @@ class ChangePassword(APIView):
             cypher_class = CustomAesRenderer()
             decrypted_secret = cypher_class.decryptString(secret)
 
-            if (decrypted_secret == str(datetime.now().date())):
+            if decrypted_secret == str(datetime.now().date()):
                 account.set_password(new_password)
                 account.save()
                 return Response(
@@ -126,9 +129,12 @@ class ChangePassword(APIView):
                 )
 
             return Response(
-                    {"detail": "Link vencido, realiza los pasos nuevamente para actualizar tu contraseña"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+                {
+                    "detail": "Link vencido, realiza los pasos "
+                    "nuevamente para actualizar tu contraseña"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -141,8 +147,11 @@ class SendEmailPassword(APIView):
         try:
             username = request.data.get("username")
 
-            account =  Account.objects.filter(username=username).first() or Account.objects.filter(email=username).first()
-            if (not(account)):
+            account = (
+                Account.objects.filter(username=username).first()
+                or Account.objects.filter(email=username).first()
+            )
+            if not (account):
                 return Response(
                     {"detail": NOT_FOUND_MESSAGE},
                     status=status.HTTP_404_NOT_FOUND,
@@ -156,16 +165,17 @@ class SendEmailPassword(APIView):
 
             token = Token.objects.get(user=account)
             cypher_class = CustomAesRenderer()
-            secret = cypher_class.encryptString(data = str(datetime.now().date()))
-            mail_content = (
-                """
+            secret = cypher_class.encryptString(data=str(datetime.now().date()))
+            mail_content = """
             Hola,
             Parece que deseas cambiar tu contraseña, ingresa al siguiente link y sigue los pasos:
             %s/#/changepassword/%s/%s
             Tienes el plazo de el día de hoy para realizar esta acción.
 
-            Atentamente: RiesgoUV """
-                % (FRONT_URL, token, secret)
+            Atentamente: RiesgoUV """ % (
+                FRONT_URL,
+                token,
+                secret,
             )
 
             sender_address = SENDER_ADDRESS
@@ -178,14 +188,13 @@ class SendEmailPassword(APIView):
             message.attach(MIMEText(mail_content, "plain"))
             session = smtplib.SMTP("smtp.gmail.com", 587)
             session.starttls()
-            session.login(
-                sender_address, sender_pass
-            )
+            session.login(sender_address, sender_pass)
             text = message.as_string()
             session.sendmail(sender_address, receiver_address, text)
             session.quit()
             return Response(
-                {"detail": "Te hemos enviado un correo electrónico"}, status=status.HTTP_200_OK
+                {"detail": "Te hemos enviado un correo electrónico"},
+                status=status.HTTP_200_OK,
             )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
