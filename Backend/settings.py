@@ -33,10 +33,15 @@ DEBUG = "RENDER" not in os.environ
 
 ALLOWED_HOSTS = []
 
+# Add allowed hosts for backend
+
+# This one is for render
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# And this one for Azure App service
 
 WEBSITE_HOSTNAME = os.environ.get("WEBSITE_HOSTNAME")
 if WEBSITE_HOSTNAME:
@@ -52,15 +57,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # My apps
-    "AppBack",
-    "rest_framework",
-    "rest_framework.authtoken",
-    "corsheaders",
+    "AppBack",  # Where the models, controllers and other stuff is located
+    "rest_framework",  # Framework for rest requests
+    "rest_framework.authtoken",  # Token authentication
+    "corsheaders",  # Allowed cors
 ]
+
+# Additional settings for token authentication using DRF
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",  # <-- And here
+        "rest_framework.authentication.TokenAuthentication",
     ],
 }
 
