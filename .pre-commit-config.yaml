@@ -4,23 +4,23 @@
 # Executes local analysis: pre-commit run -a
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
-  - repo: https://github.com/pycqa/isort # sort imports
+  - repo: https://github.com/pycqa/isort # Sorting imports
     rev: 5.12.0
     hooks:
       - id: isort
         name: isort (python)
-  - repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks # Fix common mistakes
     rev: v3.2.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: requirements-txt-fixer
       - id: check-yaml
-  - repo: https://github.com/psf/black # identifies lint errors and fix them
+  - repo: https://github.com/psf/black # Code formatter
     rev: 23.1.0
     hooks:
       - id: black
-  - repo: https://github.com/pycqa/flake8 # verify code against pep8 and programming errors
+  - repo: https://github.com/pycqa/flake8 # Detet common errors
     rev: 6.0.0
     hooks:
       - id: flake8
