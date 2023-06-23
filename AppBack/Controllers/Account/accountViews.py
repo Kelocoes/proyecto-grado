@@ -87,7 +87,11 @@ class CheckPassword(APIView):
                 account.last_login = timezone.now()
                 account.save()
                 return Response(
-                    {"detail": "Usuario ingresado correctamente", "token": token.key},
+                    {
+                        "detail": "Usuario ingresado correctamente",
+                        "token": token.key,
+                        "is_admin": account.is_superuser,
+                    },
                     status=status.HTTP_200_OK,
                 )
 
