@@ -175,4 +175,5 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://proyecto-grado-front.onrender.com",
     "https://www.riesgo-cardiovascular-uv.me",
+    "https://ambitious-tree-0a7dd3310.3.azurestaticapps.net",
 ]
