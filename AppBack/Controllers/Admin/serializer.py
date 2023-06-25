@@ -10,6 +10,12 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ["id", "first_name", "last_name", "username", "email", "last_login"]
 
 
+class AccountSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ["id", "first_name", "last_name"]
+
+
 class AccountAdminSerialier(serializers.ModelSerializer):
     user_id = AccountSerializer()
 

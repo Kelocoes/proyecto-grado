@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from AppBack.models import User
 
-from .serializer import AccountAdminSerialier, AccountSerializer, UserSerializer
+from .serializer import AccountAdminSerialier, AccountSerializer2, UserSerializer
 
 
 class GetAdmin(APIView):
@@ -40,7 +40,7 @@ class UpdateAdmin(APIView):
                 )
 
             serializer_admin = UserSerializer(admin, data=request.data)
-            serializer_account = AccountSerializer(
+            serializer_account = AccountSerializer2(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
@@ -84,7 +84,7 @@ class UpdateOther(APIView):
                 )
 
             serializer_user = UserSerializer(user, data=request.data)
-            serializer_account = AccountSerializer(
+            serializer_account = AccountSerializer2(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
