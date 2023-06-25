@@ -9,7 +9,7 @@ from AppBack.models import User
 from .serializer import (
     AccountMedicGetSerializer,
     AccountMedicSerializer,
-    AccountsSomeFieldsSerializer,
+    AccountsSomeFieldsSerializer2,
     UserSerializer,
 )
 
@@ -108,23 +108,21 @@ class UpdateMedic(APIView):
                 return Response(
                     {"detail": "No existe el usuario"}, status=status.HTTP_404_NOT_FOUND
                 )
-
             serializer_medic = UserSerializer(medic, data=request.data)
-            serializer_account = AccountsSomeFieldsSerializer(
+            serializer_account = AccountsSomeFieldsSerializer2(
                 account,
                 data={
                     "first_name": request.data.get("first_name"),
                     "last_name": request.data.get("last_name"),
                 },
             )
-
             # Valida los datos del serializer
             if serializer_medic.is_valid() and serializer_account.is_valid():
                 # Guarda los datos actualizados en la base de datos
                 serializer_medic.save()
                 serializer_account.save()
                 return Response(
-                    {"mensaje": "Información actualizada correctamente"},
+                    {"detail": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,
                 )
 
