@@ -54,7 +54,7 @@ class UpdateAdmin(APIView):
                 serializer_admin.save()
                 serializer_account.save()
                 return Response(
-                    {"mensaje": "Información actualizada correctamente"},
+                    {"detail": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,
                 )
 
@@ -98,7 +98,7 @@ class UpdateOther(APIView):
                 serializer_user.save()
                 serializer_account.save()
                 return Response(
-                    {"mensaje": "Información actualizada correctamente"},
+                    {"detail": "Información actualizada correctamente"},
                     status=status.HTTP_200_OK,
                 )
 

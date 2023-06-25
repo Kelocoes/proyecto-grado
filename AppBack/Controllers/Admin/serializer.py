@@ -7,7 +7,7 @@ from AppBack.models import User
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["id", "first_name", "last_name", "email", "last_login"]
+        fields = ["id", "first_name", "last_name", "username", "email", "last_login"]
 
 
 class AccountAdminSerialier(serializers.ModelSerializer):
