@@ -20,6 +20,7 @@ class Patient(models.Model):
     birth_date = models.DateField()
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
+    cellphone = models.CharField(max_length=20, default="0")
     blood_type = models.CharField(max_length=10)
     actual_estimation = models.FloatField(default=0)
 
