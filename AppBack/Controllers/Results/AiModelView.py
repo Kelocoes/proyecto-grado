@@ -4,7 +4,7 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppBack.models import Doctor_Patient, Patient, Results, Results_Medic_Patient
+from AppBack.models import MedicPatient, Patient, Results, ResultsMedicPatient
 
 from ..Cypher.encrypt import CustomAesRenderer
 from .ia_model import IAModel
@@ -49,16 +49,16 @@ class ModelApi(APIView):
 
                     if (
                         user.is_superuser
-                        or Doctor_Patient.objects.filter(
+                        or MedicPatient.objects.filter(
                             patient_id=request.data.get("patient_id"), user_id=user.id
                         ).exists()
                     ):
-                        results_medic_patient = Results_Medic_Patient.objects.create(
+                        resultsmedicpatient = ResultsMedicPatient.objects.create(
                             patient_id=request.data.get("patient_id"),
                             result_id=results.pk,
                             user_id=user.id,
                         )
-                        results_medic_patient.save()
+                        resultsmedicpatient.save()
 
                         Patient.objects.filter(
                             pk=request.data.get("patient_id")

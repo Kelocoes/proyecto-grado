@@ -2,9 +2,9 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppBack.models import Doctor_Patient, Patient
+from AppBack.models import MedicPatient, Patient
 
-from .serializer import PatientSerializer
+from .serializer import MedicPatientSerializer, PatientSerializer
 
 
 class CreatePatient(APIView):
@@ -29,11 +29,11 @@ class CreatePatient(APIView):
 
             patient.save()
 
-            doctor_patient = Doctor_Patient.objects.create(
+            medicpatient = MedicPatient.objects.create(
                 patient_id=patient.pk, user_id=user.id
             )
 
-            doctor_patient.save()
+            medicpatient.save()
 
             return Response(
                 {"detail": "Se creo correctamente"}, status=status.HTTP_201_CREATED
@@ -51,7 +51,7 @@ class GetPatient(APIView):
             user = request.user
             if not (user.is_superuser) and (
                 not (
-                    Doctor_Patient.objects.filter(
+                    MedicPatient.objects.filter(
                         patient_id=request.data.get("patient_id"), user_id=user.id
                     ).exists()
                 )
@@ -77,11 +77,11 @@ class GetAllPatients(APIView):
         try:
             user = request.user
             if user.is_superuser:
-                patients = Patient.objects.all()
+                patients = MedicPatient.objects.all()
+                serializer = MedicPatientSerializer(patients, many=True)
             else:
-                patients = Patient.objects.filter(doctor_patient__user_id=user.id)
-
-            serializer = PatientSerializer(patients, many=True)
+                patients = Patient.objects.filter(medicpatient__user_id=user.id)
+                serializer = PatientSerializer(patients, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -100,7 +100,7 @@ class UpdatePatient(APIView):
                 else:
                     patient = Patient.objects.get(
                         pk=request.data.get("patient_id"),
-                        doctor_patient__user_id=user.id,
+                        medicpatient__user_id=user.id,
                     )
             except Patient.DoesNotExist:
                 return Response(
@@ -138,7 +138,7 @@ class DeletePatient(APIView):
                 else:
                     patient = Patient.objects.get(
                         pk=request.data.get("patient_id"),
-                        doctor_patient__user_id=user.id,
+                        medicpatient__user_id=user.id,
                     )
             except Patient.DoesNotExist:
                 return Response(

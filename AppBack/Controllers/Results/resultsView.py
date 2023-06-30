@@ -1,7 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
-from AppBack.models import Results, Results_Medic_Patient
+from AppBack.models import Results, ResultsMedicPatient
 
 from .serializer import ResultsMedicPatientSerializer, ResultsSerializer
 
@@ -14,9 +14,9 @@ class GetResultsByDoctor(generics.ListAPIView):
         try:
             user = request.user
             if user.is_superuser:
-                rows = Results_Medic_Patient.objects.all()
+                rows = ResultsMedicPatient.objects.all()
             else:
-                rows = Results_Medic_Patient.objects.filter(user_id=user.id)
+                rows = ResultsMedicPatient.objects.filter(user_id=user.id)
             serialized_rows = ResultsMedicPatientSerializer(rows, many=True)
             return Response(serialized_rows.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -28,5 +28,5 @@ class GetResultsWithoutRegistration(generics.ListAPIView):
     permission_classes = [permissions.IsAdminUser]
 
     queryset = Results.objects.exclude(
-        results_medic_patient__result_id__isnull=False
+        resultsmedicpatient__result_id__isnull=False
     ).order_by("-date")

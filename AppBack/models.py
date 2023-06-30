@@ -25,7 +25,7 @@ class Patient(models.Model):
     actual_estimation = models.FloatField(default=0)
 
 
-class Doctor_Patient(models.Model):
+class MedicPatient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
 
@@ -49,7 +49,7 @@ class Results(models.Model):
     estimation = models.FloatField()
 
 
-class Results_Medic_Patient(models.Model):
+class ResultsMedicPatient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     result = models.ForeignKey(Results, on_delete=models.CASCADE)
