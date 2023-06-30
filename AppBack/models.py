@@ -20,11 +20,12 @@ class Patient(models.Model):
     birth_date = models.DateField()
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
+    cellphone = models.CharField(max_length=20, default="0")
     blood_type = models.CharField(max_length=10)
     actual_estimation = models.FloatField(default=0)
 
 
-class Doctor_Patient(models.Model):
+class MedicPatient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
 
@@ -48,7 +49,7 @@ class Results(models.Model):
     estimation = models.FloatField()
 
 
-class Results_Medic_Patient(models.Model):
+class ResultsMedicPatient(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
     result = models.ForeignKey(Results, on_delete=models.CASCADE)

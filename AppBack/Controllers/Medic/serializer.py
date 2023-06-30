@@ -21,7 +21,15 @@ class AccountMedicSerializer(serializers.ModelSerializer):
 class AccountsSomeFieldsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ["id", "first_name", "last_name", "username", "email", "last_login"]
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "last_login",
+            "is_active",
+        ]
 
 
 class AccountsSomeFieldsSerializer2(serializers.ModelSerializer):
