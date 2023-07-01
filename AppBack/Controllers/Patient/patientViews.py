@@ -77,12 +77,20 @@ class GetAllPatients(APIView):
         try:
             user = request.user
             if user.is_superuser:
-                patients = MedicPatient.objects.all()
+                patients = MedicPatient.objects.all().order_by("patient_id")
                 serializer = MedicPatientSerializer(patients, many=True)
             else:
-                patients = Patient.objects.filter(medicpatient__user_id=user.id)
+                patients = Patient.objects.filter(
+                    medicpatient__user_id=user.id
+                ).order_by("patient_id")
                 serializer = PatientSerializer(patients, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "detail": "Pacientes obtenidos exitosamente",
+                    "results": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
