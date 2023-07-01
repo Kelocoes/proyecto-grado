@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 
 from AppBack.models import User
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import (
     AccountMedicGetSerializer,
     AccountMedicSerializer,
@@ -17,6 +18,7 @@ from .serializer import (
 class CreateMedic(APIView):
     serializer_class = AccountMedicSerializer
     permission_classes = [permissions.AllowAny]
+    renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:
@@ -74,6 +76,7 @@ class CreateMedic(APIView):
 class GetMedic(APIView):
     serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         try:
@@ -89,6 +92,7 @@ class GetMedic(APIView):
 class GetAllMedics(generics.ListAPIView):
     serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAdminUser]
+    renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         try:
@@ -111,6 +115,7 @@ class GetAllMedics(generics.ListAPIView):
 class UpdateMedic(APIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
