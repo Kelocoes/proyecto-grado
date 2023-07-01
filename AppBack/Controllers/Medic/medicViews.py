@@ -90,7 +90,22 @@ class GetAllMedics(generics.ListAPIView):
     serializer_class = AccountMedicGetSerializer
     permission_classes = [permissions.IsAdminUser]
 
-    queryset = User.objects.exclude(user_id__is_superuser=True)
+    def get(self, request):
+        try:
+            queryset = User.objects.exclude(user_id__is_superuser=True).order_by(
+                "user_id"
+            )
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(
+                {
+                    "detail": "Médicos obtenidos exitosamente",
+                    "results": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UpdateMedic(APIView):
