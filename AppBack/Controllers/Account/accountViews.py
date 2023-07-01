@@ -42,8 +42,8 @@ class ChangeStatus(APIView):
 
     def put(self, request):
         try:
-            id = request.data.get("id")
-            account = Account.objects.get(pk=id)
+            account_id = request.data.get("id")
+            account = Account.objects.get(pk=account_id)
             is_active = request.data.get("is_active")
             account.is_active = is_active
             account.save()
