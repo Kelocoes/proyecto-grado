@@ -26,6 +26,7 @@ NOT_FOUND_MESSAGE = "Usuario no encontrado"
 class IsActive(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         user = request.user
@@ -39,6 +40,7 @@ class IsActive(APIView):
 class ChangeStatus(APIView):
     serializer_class = AccountStatusSerializer
     permission_classes = [permissions.IsAdminUser]
+    renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
@@ -57,6 +59,7 @@ class ChangeStatus(APIView):
 class CheckPassword(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.AllowAny]
+    renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:
@@ -104,6 +107,7 @@ class CheckPassword(APIView):
 class ChangePassword(APIView):
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
@@ -144,6 +148,7 @@ class ChangePassword(APIView):
 class SendEmailPassword(APIView):
     serializer_class = EmailSerializer
     permission_classes = [permissions.AllowAny]
+    renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:

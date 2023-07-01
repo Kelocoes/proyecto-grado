@@ -7,6 +7,8 @@ from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from ..Cypher.encrypt import CustomAesRenderer
+
 load_dotenv()
 
 CAPTCHA_SECRET_KEY = os.getenv("CAPTCHA_SECRET_KEY")
@@ -14,6 +16,7 @@ CAPTCHA_SECRET_KEY = os.getenv("CAPTCHA_SECRET_KEY")
 
 class GetCaptchaResponse(APIView):
     permission_classes = [permissions.AllowAny]
+    renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:

@@ -5,12 +5,14 @@ from rest_framework.views import APIView
 
 from AppBack.models import User
 
+from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import AccountAdminSerialier, AccountSerializer2, UserSerializer
 
 
 class GetAdmin(APIView):
     serializer_class = AccountAdminSerialier
     permission_classes = [permissions.IsAdminUser]
+    renderer_classes = [CustomAesRenderer]
 
     def get(self, request):
         try:
@@ -26,6 +28,7 @@ class GetAdmin(APIView):
 class UpdateAdmin(APIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAdminUser]
+    renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
@@ -70,6 +73,7 @@ class UpdateAdmin(APIView):
 class UpdateOther(APIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAdminUser]
+    renderer_classes = [CustomAesRenderer]
 
     def put(self, request):
         try:
