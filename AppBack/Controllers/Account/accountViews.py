@@ -42,11 +42,9 @@ class ChangeStatus(APIView):
 
     def put(self, request):
         try:
-            token = request.data.get("token")
-            token_obj = Token.objects.get(pk=token)
-            user_id = token_obj.user_id
+            id = request.data.get("id")
+            account = Account.objects.get(pk=id)
             is_active = request.data.get("is_active")
-            account = Account.objects.get(pk=user_id)
             account.is_active = is_active
             account.save()
             return Response(
