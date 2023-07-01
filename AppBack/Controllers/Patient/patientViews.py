@@ -17,6 +17,9 @@ class CreatePatient(APIView):
 
     def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
 
             patient = Patient.objects.create(
@@ -51,6 +54,9 @@ class GetPatient(APIView):
 
     def get(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
             if not (user.is_superuser) and (
                 not (
@@ -106,6 +112,9 @@ class UpdatePatient(APIView):
 
     def put(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
             try:
                 if user.is_superuser:
@@ -145,6 +154,9 @@ class DeletePatient(APIView):
 
     def delete(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
             try:
                 if user.is_superuser:

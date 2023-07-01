@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 
 from AppBack.models import MedicPatient, Patient, Results, ResultsMedicPatient
 
-from ..Cypher.encrypt import CustomAesRenderer
 from .ia_model import IAModel
 from .serializer import ResultsSerializer
 
@@ -18,7 +17,6 @@ class ModelApi(APIView):
 
     serializer_class = ResultsSerializer
     permission_classes = [permissions.AllowAny]
-    renderer_classes = [CustomAesRenderer]
 
     def post(self, request):
         try:

@@ -22,6 +22,9 @@ class CreateMedic(APIView):
 
     def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             username = request.data.get("username")
             password = request.data.get("password")
             first_name = request.data.get("first_name")
@@ -119,6 +122,9 @@ class UpdateMedic(APIView):
 
     def put(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
 
             try:

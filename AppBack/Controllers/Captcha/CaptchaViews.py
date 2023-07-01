@@ -20,6 +20,9 @@ class GetCaptchaResponse(APIView):
 
     def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             token = request.data.get("token")
             url = (
                 "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s"
