@@ -26,9 +26,7 @@ class IAModel:
                 n_nodes_last_hidden_layer = list(self.model.hidden_layer_sizes)[-1]
 
             last_weights = self.model.coefs_[-1].ravel()
-            # print("Last weights --> ",last_weights)
             last_bias = self.model.intercepts_[-1][0]
-            # print("Last bias --> ", last_bias)
             max_value, min_value = 0, 0
 
             for i in range(0, n_nodes_last_hidden_layer):
@@ -37,7 +35,6 @@ class IAModel:
 
             max_value += last_bias
             min_value += last_bias
-            # print("Max value: ",max_value,"Min value: ", min_value)
             return (outputs - min_value) / (max_value - min_value)
         return "error"
 

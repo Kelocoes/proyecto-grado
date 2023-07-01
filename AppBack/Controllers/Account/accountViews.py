@@ -69,7 +69,6 @@ class CheckPassword(APIView):
             cypher_class = CustomAesRenderer()
             request.data.update(cypher_class.decryptJson(request.data))
             request.data.pop("ciphertext")
-            print(request.data)
             username = request.data.get("username")
             password = request.data.get("password")
 
@@ -108,7 +107,6 @@ class CheckPassword(APIView):
             )
 
         except Exception as e:
-            print(e)
             return Response({"detail": str(e)}, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
