@@ -32,6 +32,9 @@ class UpdateAdmin(APIView):
 
     def put(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
 
             try:
@@ -77,6 +80,9 @@ class UpdateOther(APIView):
 
     def put(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user_id = request.data.get("user_id")
 
             try:

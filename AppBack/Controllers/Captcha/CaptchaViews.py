@@ -20,6 +20,9 @@ class GetCaptchaResponse(APIView):
 
     def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             token = request.data.get("token")
             url = (
                 "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s"
@@ -28,5 +31,4 @@ class GetCaptchaResponse(APIView):
             res = requests.post(url)
             return Response({"detail": json.loads(res.text)}, status=status.HTTP_200_OK)
         except Exception as e:
-            print(str(e))
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)

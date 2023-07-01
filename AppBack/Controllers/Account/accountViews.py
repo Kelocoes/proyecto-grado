@@ -44,6 +44,9 @@ class ChangeStatus(APIView):
 
     def put(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             account_id = request.data.get("id")
             account = Account.objects.get(pk=account_id)
             is_active = request.data.get("is_active")
@@ -63,6 +66,9 @@ class CheckPassword(APIView):
 
     def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             username = request.data.get("username")
             password = request.data.get("password")
 
@@ -111,6 +117,9 @@ class ChangePassword(APIView):
 
     def put(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
             new_password = request.data.get("password")
             secret = request.data.get("secret")
@@ -152,6 +161,9 @@ class SendEmailPassword(APIView):
 
     def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             username = request.data.get("username")
 
             account = (
