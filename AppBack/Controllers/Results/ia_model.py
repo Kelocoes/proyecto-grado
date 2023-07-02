@@ -76,4 +76,8 @@ class IAModel:
             else:
                 severity = "High"
 
-        return {"prediction": normalized_prediction, "severity": severity}
+        return {
+            "detail": "Estimación realizada con éxito",
+            "prediction": normalized_prediction,
+            "severity": severity,
+        }
