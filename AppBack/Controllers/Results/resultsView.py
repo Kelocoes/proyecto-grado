@@ -7,20 +7,30 @@ from ..Cypher.encrypt import CustomAesRenderer
 from .serializer import ResultsMedicPatientSerializer, ResultsSerializer
 
 
-class GetResultsByDoctor(generics.ListAPIView):
+class GetResultsByPatient(generics.ListAPIView):
     serializer_class = ResultsMedicPatientSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     renderer_classes = [CustomAesRenderer]
 
-    def get(self, request):
+    def post(self, request):
         try:
+            cypher_class = CustomAesRenderer()
+            request.data.update(cypher_class.decryptJson(request.data))
+            request.data.pop("ciphertext")
             user = request.user
+            patient_id = request.data.get("patient_id")
+            print(patient_id)
             if user.is_superuser:
-                rows = ResultsMedicPatient.objects.all()
+                rows = ResultsMedicPatient.objects.filter(patient_id=patient_id)
             else:
-                rows = ResultsMedicPatient.objects.filter(user_id=user.id)
+                rows = ResultsMedicPatient.objects.filter(
+                    patient_id=patient_id, user_id=user.id
+                )
             serialized_rows = ResultsMedicPatientSerializer(rows, many=True)
-            return Response(serialized_rows.data, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": "Información obtenida", "results": serialized_rows.data},
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
