@@ -25,7 +25,7 @@ from AppBack.Controllers.Patient.patientViews import (
 )
 from AppBack.Controllers.Results.AiModelView import ModelApi
 from AppBack.Controllers.Results.resultsView import (
-    GetResultsByDoctor,
+    GetResultsByPatient,
     GetResultsWithoutRegistration,
 )
 
@@ -56,6 +56,6 @@ urlpatterns = [
     path("api/patient/delete", DeletePatient.as_view()),
     # Results
     path("api/results/model/generate", ModelApi.as_view()),
-    path("api/results/get/byDoctor", GetResultsByDoctor.as_view()),
+    path("api/results/get/byPatient", GetResultsByPatient.as_view()),
     path("api/results/get/noregister", GetResultsWithoutRegistration.as_view()),
 ]

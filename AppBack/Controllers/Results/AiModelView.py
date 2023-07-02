@@ -51,6 +51,20 @@ class ModelApi(APIView):
                             patient_id=request.data.get("patient_id"), user_id=user.id
                         ).exists()
                     ):
+                        if (
+                            Patient.objects.filter(
+                                pk=request.data.get("patient_id")
+                            ).exists()
+                            is False
+                        ):
+                            return Response(
+                                {
+                                    "detail": "Usuario no encontrado",
+                                    "prediction": 0,
+                                    "severity": "Low",
+                                },
+                                status=status.HTTP_404_NOT_FOUND,
+                            )
                         resultsmedicpatient = ResultsMedicPatient.objects.create(
                             patient_id=request.data.get("patient_id"),
                             result_id=results.pk,
@@ -65,11 +79,16 @@ class ModelApi(APIView):
                         return Response(
                             {
                                 "detail": "Estas tratando de hacerle una estimación a un "
-                                "paciente que no es tuyo"
+                                "paciente que no es tuyo",
+                                "prediction": 0,
+                                "severity": "Low",
                             },
                             status=status.HTTP_400_BAD_REQUEST,
                         )
 
             return Response(prediction)
         except Exception as e:
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": str(e), "prediction": 0, "severity": "Low"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
