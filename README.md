@@ -3,6 +3,7 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Kelocoes_proyecto-grado&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=Kelocoes_proyecto-grado)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Kelocoes_proyecto-grado&metric=bugs)](https://sonarcloud.io/summary/new_code?id=Kelocoes_proyecto-grado)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Kelocoes_proyecto-grado&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=Kelocoes_proyecto-grado)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Kelocoes_proyecto-grado&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=Kelocoes_proyecto-grado)
 # Backend - Proyecto de Grado
 Estimación de riesgo cardiovascular en Colombia utilizando técnicas de inteligencia artificial.
 - Creado por Kevin David Rodríguez Belalcázar
