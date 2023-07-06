@@ -91,11 +91,10 @@ class IAModel:
             be1 = 0.04826 if row["sexo"] == "0" else 0.33766
             be2 = 0 if row["sexo"] == "0" else -0.00268
 
-            bc = "Weird"
             if row["colesterol"] < 160:
                 bc = -0.65945 if row["sexo"] == "0" else -0.26138
             elif 160 <= row["colesterol"] <= 199:
-                bc = 0 if row["sexo"] == "0" else 0
+                bc = 0
             elif 200 <= row["colesterol"] <= 239:
                 bc = 0.17692 if row["sexo"] == "0" else 0.20771
             elif 240 <= row["colesterol"] <= 279:
@@ -103,7 +102,6 @@ class IAModel:
             else:
                 bc = 0.65713 if row["sexo"] == "0" else 0.53513
 
-            bh = "Weird"
             if row["hdl"] < 35:
                 bh = 0.49744 if row["sexo"] == "0" else 0.84312
             elif 35 <= row["hdl"] <= 44:
@@ -115,11 +113,10 @@ class IAModel:
             else:
                 bh = -0.48660 if row["sexo"] == "0" else -0.42951
 
-            bt = "Weird"
             if row["sistolica"] < 120 and row["diastolica"] < 80:
                 bt = -0.00226 if row["sexo"] == "0" else -0.53363
             elif row["sistolica"] < 130 and row["diastolica"] < 85:
-                bt = 0 if row["sexo"] == "0" else 0
+                bt = 0
             elif row["sistolica"] < 140 and row["diastolica"] < 90:
                 bt = 0.28320 if row["sexo"] == "0" else -0.06773
             elif row["sistolica"] < 160 and row["diastolica"] < 100:
@@ -129,15 +126,13 @@ class IAModel:
             else:
                 bt = 0
 
-            bd = "Weird"
             if row["diabetes"] == "0":
-                bd = 0 if row["sexo"] == "0" else 0
+                bd = 0
             else:
                 bd = 0.42839 if row["sexo"] == "0" else 0.59626
 
-            bf = "Weird"
             if row["tabaco"] == "0":
-                bf = 0 if row["sexo"] == "0" else 0
+                bf = 0
             else:
                 bf = 0.52337 if row["sexo"] == "0" else 0.29246
 
