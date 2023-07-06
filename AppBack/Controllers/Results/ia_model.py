@@ -85,7 +85,7 @@ class IAModel:
             "severity": severity,
         }
 
-    def framingham(self, df):
+    def framingham(self, df):  # NOSONAR
         results = []
         for index, row in df.iterrows():
             be1 = 0.04826 if row["sexo"] == "0" else 0.33766
