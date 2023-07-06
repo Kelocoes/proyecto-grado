@@ -1,3 +1,4 @@
+import math
 import os
 from pathlib import Path
 
@@ -59,6 +60,7 @@ class IAModel:
         ]
 
         df = pd.DataFrame([data], columns=columns)
+        framingham_result = self.framingham(df)
         data_inputed = self.pipeline_inputer.transform(df)
 
         df = pd.DataFrame([data_inputed[0]], columns=columns)
@@ -79,5 +81,78 @@ class IAModel:
         return {
             "detail": "Estimación realizada con éxito",
             "prediction": normalized_prediction,
+            "framingham": framingham_result[0],
             "severity": severity,
         }
+
+    def framingham(self, df):  # NOSONAR
+        results = []
+        for index, row in df.iterrows():
+            be1 = 0.04826 if row["sexo"] == "0" else 0.33766
+            be2 = 0 if row["sexo"] == "0" else -0.00268
+
+            if row["colesterol"] < 160:
+                bc = -0.65945 if row["sexo"] == "0" else -0.26138
+            elif 160 <= row["colesterol"] <= 199:
+                bc = 0
+            elif 200 <= row["colesterol"] <= 239:
+                bc = 0.17692 if row["sexo"] == "0" else 0.20771
+            elif 240 <= row["colesterol"] <= 279:
+                bc = 0.50539 if row["sexo"] == "0" else 0.24385
+            else:
+                bc = 0.65713 if row["sexo"] == "0" else 0.53513
+
+            if row["hdl"] < 35:
+                bh = 0.49744 if row["sexo"] == "0" else 0.84312
+            elif 35 <= row["hdl"] <= 44:
+                bh = 0.24310 if row["sexo"] == "0" else 0.37796
+            elif 45 <= row["hdl"] <= 49:
+                bh = 0 if row["sexo"] == "0" else 0.19785
+            elif 50 <= row["hdl"] <= 59:
+                bh = -0.05107 if row["sexo"] == "0" else 0
+            else:
+                bh = -0.48660 if row["sexo"] == "0" else -0.42951
+
+            if row["sistolica"] < 120 and row["diastolica"] < 80:
+                bt = -0.00226 if row["sexo"] == "0" else -0.53363
+            elif row["sistolica"] < 130 and row["diastolica"] < 85:
+                bt = 0
+            elif row["sistolica"] < 140 and row["diastolica"] < 90:
+                bt = 0.28320 if row["sexo"] == "0" else -0.06773
+            elif row["sistolica"] < 160 and row["diastolica"] < 100:
+                bt = 0.52168 if row["sexo"] == "0" else 0.26288
+            elif row["sistolica"] >= 160 and row["diastolica"] >= 100:
+                bt = 0.61859 if row["sexo"] == "0" else 0.46573
+            else:
+                bt = 0
+
+            if row["diabetes"] == "0":
+                bd = 0
+            else:
+                bd = 0.42839 if row["sexo"] == "0" else 0.59626
+
+            if row["tabaco"] == "0":
+                bf = 0
+            else:
+                bf = 0.52337 if row["sexo"] == "0" else 0.29246
+
+            # print(be1,be2,bc,bh,bt,bd,bf)
+            L = -1
+            if row["sexo"] == "0":
+                L = be1 * row["edad"] + bc + bh + bt + bd + bf
+            else:
+                L = be1 * row["edad"] + be2 * row["edad"] ** 2 + bc + bh + bt + bd + bf
+
+            # print("L --> ", L)
+            B = -1
+            if row["sexo"] == "0":
+                B = math.exp(L - 3.0975)
+            else:
+                B = math.exp(L - 9.92545)
+
+            # print("B --> ", B)
+            if row["sexo"] == "0":
+                results.append(1 - 0.90015**B)
+            else:
+                results.append(1 - 0.96246**B)
+        return results
