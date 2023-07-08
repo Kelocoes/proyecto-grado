@@ -23,7 +23,6 @@ class GetResultsByPatient(generics.ListAPIView):
             request.data.pop("ciphertext")
             user = request.user
             patient_id = request.data.get("patient_id")
-            print(patient_id)
             if user.is_superuser:
                 rows = ResultsMedicPatient.objects.filter(patient_id=patient_id)
             else:
