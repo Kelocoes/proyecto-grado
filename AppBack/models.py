@@ -47,6 +47,7 @@ class Results(models.Model):
     smoking = models.CharField(max_length=2, choices=[("0", "0"), ("1", "1")])
     background = models.CharField(max_length=2, choices=[("0", "0"), ("1", "1")])
     estimation = models.FloatField()
+    severity = models.CharField(max_length=10, default="Bajo")
 
 
 class ResultsMedicPatient(models.Model):
