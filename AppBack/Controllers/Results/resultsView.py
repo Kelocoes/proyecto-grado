@@ -75,7 +75,7 @@ class GetResultsByMonth(generics.ListAPIView):
                 amounts.append(amount)
             return Response(
                 {
-                    "detail": "Información obtenida",
+                    "detail": "Información por mes obtenida",
                     "results": {"months": months, "amounts": amounts},
                 },
                 status=status.HTTP_200_OK,
@@ -158,7 +158,7 @@ class GetResultsByCategory(generics.ListAPIView):
 
             return Response(
                 {
-                    "detail": "Información obtenida",
+                    "detail": "Información por categoría obtenida",
                     "results": {"datasets": labels, "values": values},
                 },
                 status=status.HTTP_200_OK,
