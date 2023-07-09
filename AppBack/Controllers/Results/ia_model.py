@@ -72,11 +72,11 @@ class IAModel:
         severity = "none"
         if normalized_prediction != "error":
             if normalized_prediction < self.threshold_1:
-                severity = "Low"
+                severity = "Bajo"
             elif normalized_prediction < self.threshold_2:
-                severity = "Medium"
+                severity = "Leve"
             else:
-                severity = "High"
+                severity = "Alto"
 
         return {
             "detail": "Estimación realizada con éxito",

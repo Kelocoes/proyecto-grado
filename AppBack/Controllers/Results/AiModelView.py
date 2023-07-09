@@ -38,7 +38,8 @@ class ModelApi(APIView):
                     triglycerides=request.data.get("triglycerides"),
                     smoking=request.data.get("smoking"),
                     background=request.data.get("background"),
-                    estimation=prediction.get("prediction"),
+                    estimation=round(prediction.get("prediction"), 4),
+                    severity=prediction.get("severity"),
                 )
                 results.save()
 
@@ -61,7 +62,7 @@ class ModelApi(APIView):
                                 {
                                     "detail": "Usuario no encontrado",
                                     "prediction": 0,
-                                    "severity": "Low",
+                                    "severity": "Bajo",
                                 },
                                 status=status.HTTP_404_NOT_FOUND,
                             )
