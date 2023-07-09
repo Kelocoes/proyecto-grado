@@ -80,7 +80,7 @@ class IAModel:
 
         return {
             "detail": "Estimación realizada con éxito",
-            "prediction": normalized_prediction,
+            "prediction": round(normalized_prediction, 4),
             "framingham": framingham_result[0],
             "severity": severity,
         }
