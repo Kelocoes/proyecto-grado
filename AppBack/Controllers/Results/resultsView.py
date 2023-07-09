@@ -237,6 +237,7 @@ class AvgNumericResults(generics.ListAPIView):
                 Results.objects.filter(keyfilter)
                 .values_list("severity", flat=True)
                 .distinct()
+                .order_by("severity")
             )
             for i in range(len(severity_list)):
                 row = []
