@@ -1,6 +1,6 @@
 import datetime
 
-from django.db.models import Count, Max, OuterRef, Subquery
+from django.db.models import Avg, Count, Max, OuterRef, Q, Subquery
 from django.db.models.functions import TruncMonth
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -124,41 +124,16 @@ class GetResultsByCategory(generics.ListAPIView):
             values = [[0, 0]]
             querys = []
             if user.is_superuser:
-                querys.append(
-                    Results.objects.values("sex").annotate(count=Count("result_id"))
-                )
-                querys.append(
-                    Results.objects.values("diabetes").annotate(
-                        count=Count("result_id")
-                    )
-                )
-                querys.append(
-                    Results.objects.values("smoking").annotate(count=Count("result_id"))
-                )
-                querys.append(
-                    Results.objects.values("background").annotate(
-                        count=Count("result_id")
-                    )
-                )
+                keyfilter = Q()
             else:
+                keyfilter = Q(resultsmedicpatient__user_id=user.id)
+
+            field_list = ["sex", "diabetes", "smoking", "background"]
+
+            for field in field_list:
                 querys.append(
-                    Results.objects.filter(resultsmedicpatient__user_id=user.id)
-                    .values("sex")
-                    .annotate(count=Count("result_id"))
-                )
-                querys.append(
-                    Results.objects.filter(resultsmedicpatient__user_id=user.id)
-                    .values("diabetes")
-                    .annotate(count=Count("result_id"))
-                )
-                querys.append(
-                    Results.objects.filter(resultsmedicpatient__user_id=user.id)
-                    .values("smoking")
-                    .annotate(count=Count("result_id"))
-                )
-                querys.append(
-                    Results.objects.filter(resultsmedicpatient__user_id=user.id)
-                    .values("background")
+                    Results.objects.filter(keyfilter)
+                    .values(field)
                     .annotate(count=Count("result_id"))
                 )
 
@@ -219,5 +194,65 @@ class GetScatterPatients(generics.ListAPIView):
         except Exception as e:
             return Response(
                 {"detail": str(e), "results": {"labels": [], "values": []}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class AvgNumericResults(generics.ListAPIView):
+    serializer_class = ResultsMedicPatientSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    renderer_classes = [CustomAesRenderer]
+
+    def get(self, request):
+        try:
+            user = request.user
+            results = []
+            if user.is_superuser:
+                keyfilter = Q()
+            else:
+                keyfilter = Q(resultsmedicpatient__user_id=user.id)
+
+            field_names = [
+                "age",
+                "weight",
+                "height",
+                "systolic",
+                "diastolic",
+                "cholesterol",
+                "hdl",
+                "ldl",
+                "triglycerides",
+            ]
+            query_avgs = {}
+            for field_name in field_names:
+                queryset = (
+                    Results.objects.filter(keyfilter)
+                    .values("severity")
+                    .annotate(Avg(field_name))
+                    .order_by("severity")
+                )
+                query_avgs[field_name] = queryset
+
+            severity_list = list(
+                Results.objects.filter(keyfilter)
+                .values_list("severity", flat=True)
+                .distinct()
+            )
+            for i in range(len(severity_list)):
+                row = []
+                row.append(severity_list[i])
+                for field_name in field_names:
+                    row.append(
+                        round(query_avgs[field_name][i][field_name + "__avg"], 2)
+                    )
+                results.append(row)
+
+            return Response(
+                {"detail": "Promedios generados correctamente", "results": results},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"detail": str(e), "results": []},
                 status=status.HTTP_400_BAD_REQUEST,
             )
