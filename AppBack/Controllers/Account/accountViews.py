@@ -188,7 +188,7 @@ class SendEmailPassword(APIView):
             mail_content = """
             Hola,
             Parece que deseas cambiar tu contraseña, ingresa al siguiente link y sigue los pasos:
-            %s/#/changepassword/%s/%s
+            %s/#/changepassword/?&token=%s&secret=%s
             Tienes el plazo de el día de hoy para realizar esta acción.
 
             Atentamente: RiesgoUV """ % (
