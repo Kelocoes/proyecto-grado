@@ -39,7 +39,8 @@ class ModelApi(APIView):
                     smoking=request.data.get("smoking"),
                     background=request.data.get("background"),
                     estimation=prediction.get("prediction"),
-                    severity=prediction.get("severity"),
+                    quartil=prediction.get("quartil"),
+                    framingham=prediction.get("framingham"),
                 )
                 results.save()
 
@@ -62,7 +63,7 @@ class ModelApi(APIView):
                                 {
                                     "detail": "Usuario no encontrado",
                                     "prediction": 0,
-                                    "severity": "Bajo",
+                                    "quartil": "0",
                                 },
                                 status=status.HTTP_404_NOT_FOUND,
                             )
@@ -82,7 +83,7 @@ class ModelApi(APIView):
                                 "detail": "Estas tratando de hacerle una estimación a un "
                                 "paciente que no es tuyo",
                                 "prediction": 0,
-                                "severity": "Low",
+                                "quartil": "0",
                             },
                             status=status.HTTP_400_BAD_REQUEST,
                         )
@@ -90,6 +91,6 @@ class ModelApi(APIView):
             return Response(prediction)
         except Exception as e:
             return Response(
-                {"detail": str(e), "prediction": 0, "severity": "Low"},
+                {"detail": str(e), "prediction": 0, "quartil": "0"},
                 status=status.HTTP_400_BAD_REQUEST,
             )

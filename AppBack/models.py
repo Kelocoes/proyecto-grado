@@ -23,6 +23,7 @@ class Patient(models.Model):
     cellphone = models.CharField(max_length=20, default="0")
     blood_type = models.CharField(max_length=10)
     actual_estimation = models.FloatField(default=0)
+    outcome = models.CharField(max_length=5, default="0")
 
 
 class MedicPatient(models.Model):
@@ -47,7 +48,8 @@ class Results(models.Model):
     smoking = models.CharField(max_length=2, choices=[("0", "0"), ("1", "1")])
     background = models.CharField(max_length=2, choices=[("0", "0"), ("1", "1")])
     estimation = models.FloatField()
-    severity = models.CharField(max_length=10, default="Bajo")
+    quartil = models.CharField(max_length=10, default="1")
+    framingham = models.FloatField(default=0)
 
 
 class ResultsMedicPatient(models.Model):

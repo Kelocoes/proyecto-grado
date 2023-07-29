@@ -30,6 +30,7 @@ class CreatePatient(APIView):
                 city=request.data.get("city"),
                 address=request.data.get("address"),
                 blood_type=request.data.get("blood_type"),
+                cellphone=request.data.get("cellphone"),
             )
 
             patient.save()

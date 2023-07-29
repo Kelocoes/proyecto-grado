@@ -1,6 +1,6 @@
 import datetime
 
-from django.db.models import Avg, Count, Max, OuterRef, Q, Subquery
+from django.db.models import Avg, Count, Max, Min, OuterRef, Q, Subquery
 from django.db.models.functions import TruncMonth
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -227,21 +227,21 @@ class AvgNumericResults(generics.ListAPIView):
             for field_name in field_names:
                 queryset = (
                     Results.objects.filter(keyfilter)
-                    .values("severity")
+                    .values("quartil")
                     .annotate(Avg(field_name))
-                    .order_by("severity")
+                    .order_by("quartil")
                 )
                 query_avgs[field_name] = queryset
 
-            severity_list = list(
+            quartil_list = list(
                 Results.objects.filter(keyfilter)
-                .values_list("severity", flat=True)
+                .values_list("quartil", flat=True)
                 .distinct()
-                .order_by("severity")
+                .order_by("quartil")
             )
-            for i in range(len(severity_list)):
+            for i in range(len(quartil_list)):
                 row = []
-                row.append(severity_list[i])
+                row.append(quartil_list[i])
                 for field_name in field_names:
                     row.append(
                         round(query_avgs[field_name][i][field_name + "__avg"], 2)
@@ -250,6 +250,42 @@ class AvgNumericResults(generics.ListAPIView):
 
             return Response(
                 {"detail": "Promedios generados correctamente", "results": results},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"detail": str(e), "results": []},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class DataForTraining(generics.ListAPIView):
+    serializer_class = ResultsMedicPatientSerializer
+    permission_classes = [permissions.IsAdminUser]
+    renderer_classes = [CustomAesRenderer]
+
+    def get(self, request):
+        try:
+            subquery = ResultsMedicPatient.objects.filter(
+                patient_id=OuterRef("patient_id")
+            )
+            last_result_id_subquery = (
+                subquery.values("patient_id")
+                .annotate(max_id=Min("result_id"))
+                .values("max_id")[:1]
+            )
+
+            query = ResultsMedicPatient.objects.filter(
+                result_id__in=Subquery(last_result_id_subquery)
+            )
+
+            serialized_rows = ResultsMedicPatientSerializer(query, many=True)
+
+            return Response(
+                {
+                    "detail": "Información por paciente obtenida",
+                    "results": serialized_rows.data,
+                },
                 status=status.HTTP_200_OK,
             )
         except Exception as e:

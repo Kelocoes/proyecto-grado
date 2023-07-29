@@ -26,6 +26,7 @@ from AppBack.Controllers.Patient.patientViews import (
 from AppBack.Controllers.Results.AiModelView import ModelApi
 from AppBack.Controllers.Results.resultsView import (
     AvgNumericResults,
+    DataForTraining,
     GetResultsByCategory,
     GetResultsByMonth,
     GetResultsByPatient,
@@ -66,4 +67,5 @@ urlpatterns = [
     path("api/results/get/byCategory", GetResultsByCategory.as_view()),
     path("api/results/get/scatterpatient", GetScatterPatients.as_view()),
     path("api/results/get/AvgNumericResults", AvgNumericResults.as_view()),
+    path("api/results/get/dataForTraining", DataForTraining.as_view()),
 ]
