@@ -1,3 +1,5 @@
+from datetime import date
+
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -30,6 +32,7 @@ class CreatePatient(APIView):
                 city=request.data.get("city"),
                 address=request.data.get("address"),
                 blood_type=request.data.get("blood_type"),
+                cellphone=request.data.get("cellphone"),
             )
 
             patient.save()

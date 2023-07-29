@@ -12,7 +12,7 @@ class ResultsSerializer(serializers.ModelSerializer):
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
-        fields = ["patient_id", "first_name", "last_name"]
+        fields = ["patient_id", "first_name", "last_name", "outcome"]
 
 
 class MedicSerializer(serializers.ModelSerializer):

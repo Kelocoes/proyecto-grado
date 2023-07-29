@@ -16,8 +16,9 @@ class IAModel:
         self.pipeline_norm = joblib.load(
             os.path.join(BASE_DIR, "./pipeline_norm.joblib")
         )
-        self.threshold_1 = 0.639
-        self.threshold_2 = 0.75
+        self.threshold_1 = 0.25
+        self.threshold_2 = 0.50
+        self.threshold_3 = 0.75
 
     def normalization(self, outputs):
         if self.model.activation == "tanh":
@@ -69,20 +70,22 @@ class IAModel:
         prediction = self.model.predict(data_normalized)
         normalized_prediction = self.normalization(prediction)[0]
 
-        severity = "none"
+        quartil = "none"
         if normalized_prediction != "error":
-            if normalized_prediction < self.threshold_1:
-                severity = "Bajo"
-            elif normalized_prediction < self.threshold_2:
-                severity = "Leve"
+            if normalized_prediction <= self.threshold_1:
+                quartil = "1"
+            elif normalized_prediction <= self.threshold_2:
+                quartil = "2"
+            elif normalized_prediction <= self.threshold_3:
+                quartil = "3"
             else:
-                severity = "Alto"
+                quartil = "4"
 
         return {
             "detail": "Estimación realizada con éxito",
             "prediction": round(normalized_prediction, 4),
-            "framingham": framingham_result[0],
-            "severity": severity,
+            "framingham": round(framingham_result[0], 4),
+            "quartil": quartil,
         }
 
     def framingham(self, df):
