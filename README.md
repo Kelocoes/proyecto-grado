@@ -20,25 +20,25 @@ Puede ejecutarse de forma local por medio del comando:
     python manage.py runserver
 ```
 
-Se aclara que es requerido un archivo `.env` con la siguiente estructura: \
-&nbsp;&nbsp; DB_NAME=...\
-&nbsp;&nbsp; DB_USER=...\
-&nbsp;&nbsp; DB_PASSWORD=...\
-&nbsp;&nbsp; DB_HOST=...\
-&nbsp;&nbsp; DB_DATABASE_PORT=...\
-&nbsp;&nbsp; AES_IV=...\
-&nbsp;&nbsp; AES_SECRET_KEY=...\
-&nbsp;&nbsp; SENDER_ADDRESS=...\
-&nbsp;&nbsp; SENDER_PASS=...\
-&nbsp;&nbsp; CAPTCHA_SECRET_KEY=...\
-&nbsp;&nbsp; FRONT_URL=...
+Se aclara que es requerido un archivo `.env` con una estructura similar a la siguiente: \
+&nbsp;&nbsp; DB_NAME=postgres \
+&nbsp;&nbsp; DB_USER=user \
+&nbsp;&nbsp; DB_PASSWORD=password \
+&nbsp;&nbsp; DB_HOST=host \
+&nbsp;&nbsp; DB_DATABASE_PORT=5432 \
+&nbsp;&nbsp; AES_IV=YfQEdyEYuUBmunEU \
+&nbsp;&nbsp; AES_SECRET_KEY=nEnWbpugBYUuIajgRStZbAWhrgyekggr \
+&nbsp;&nbsp; SENDER_ADDRESS=mail@mail.com \
+&nbsp;&nbsp; SENDER_PASS=password \
+&nbsp;&nbsp; CAPTCHA_SECRET_KEY=6LeFACwnAAAAACj2jdTD9_rKx8rf4tz-Xxy1Xx0n \
+&nbsp;&nbsp; FRONT_URL=http://localhost:3000
 
 Esto es necesario para las siguientes acciones:
 - Credenciales de la base de datos
-- Llaves para la encripcación AES 256, Modo CBC
-- Credenciales para envío de correos
-- Llave para uso de la api de reCaptcha
-- URL del Front-End
+- Llaves para la encriptación AES 256, Modo CBC (con longitud de 16 y 32 respectivamente)
+- Credenciales para envío de correos (correo y contraseña)
+- Llave para uso de la api de reCaptcha (revisar documentación de [google](https://www.google.com/recaptcha/about/))
+- URL del Front-End (puede ser localhost en el puerto 3000 o la url donde está alojado el frontend)
 
 # Nota del creador
 Este proyecto incluyendo el componente front se hizo con mucho empeño durante el año 2023.
