@@ -40,6 +40,12 @@ Esto es necesario para las siguientes acciones:
 - Llave para uso de la api de reCaptcha (revisar documentación de [google](https://www.google.com/recaptcha/about/))
 - URL del Front-End (puede ser localhost en el puerto 3000 o la url donde está alojado el frontend)
 
+Si se desea tener una cuenta como administrador, es necesario crearla por medio del comando:
+```bash
+    python manage.py createsuperuser
+```
+Luego de esto adicionar un registro en la tabla de la base de datos `AppBack_user` con el mismo id generado para el administrador (superuser) en la tabla `auth_user`
+
 # Nota del creador
 Este proyecto incluyendo el componente front se hizo con mucho empeño durante el año 2023.
 - [Repositorio del Front-End](https://github.com/Kelocoes/proyecto-grado-front)
